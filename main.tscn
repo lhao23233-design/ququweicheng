@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://bjmbgwu1goccx"]
+
+[ext_resource type="Script" uid="uid://cojt82lais7sm" path="res://core/GameLoop.cs" id="1_ig7tw"]
+
+[node name="Node2D" type="Node2D" unique_id=1965885403]
+
+[node name="Node" type="Node" parent="." unique_id=2066852425]
+script = ExtResource("1_ig7tw")

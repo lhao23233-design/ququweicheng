@@ -1,0 +1,14 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# C# / .NET 编译产物
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+
+# 杂项
+.DS_Store
+Thumbs.db
