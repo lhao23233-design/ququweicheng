@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://cuhfhggeeaq6s"]
+
+[ext_resource type="Script" uid="uid://dueml43e7rt53" path="res://ui/HUD.cs" id="1_epypp"]
+[ext_resource type="Script" uid="uid://cojt82lais7sm" path="res://core/GameLoop.cs" id="1_wtcfe"]
+
+[node name="Node2D" type="Node2D" unique_id=1154050608]
+
+[node name="HUD" type="Label" parent="." unique_id=879517376]
+offset_right = 300.0
+offset_bottom = 100.0
+script = ExtResource("1_epypp")
+
+[node name="GameLoop" type="Node" parent="." unique_id=637401558]
+script = ExtResource("1_wtcfe")

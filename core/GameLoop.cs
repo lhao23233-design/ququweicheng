@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using CoopDefense.Core;
 
 namespace CoopDefense.Core
 {
@@ -14,7 +12,9 @@ namespace CoopDefense.Core
 	public partial class GameLoop : Node
 	{
 		public Phase CurrentPhase { get; private set; } = Phase.Rest;
-		public float PhaseTimer { get; private set; }
+		public float PhaseTimer { get; private set; }	
+		public GameState State { get; } = new();
+		public int CurrentRound { get; private set; } = 1;
 
 		// 信号：状态切换时通知 UI
 		[Signal]
@@ -54,6 +54,7 @@ namespace CoopDefense.Core
 				case Phase.Settlement:
 					CurrentPhase = Phase.Rest;
 					PhaseTimer = Config.RestPhaseDuration;
+					CurrentRound++;
 					GD.Print("进入休整期，新一轮开始");
 					break;
 			}

@@ -94,7 +94,17 @@
 ## 目录结构
 
 ```
-/src
+/
+  .editorconfig
+  .gitattributes
+  .gitignore
+  icon.svg
+  icon.svg.import
+  main.tscn
+  project.godot
+  ququweicheng-v0.1.0.csproj
+  ququweicheng-v0.1.0.sln
+  readme.md
   /core
     Config.cs            // 所有占位常量集中在这里
     GameLoop.cs          // 状态机：休整/开展/结算/小Boss
@@ -133,7 +143,7 @@
     Main.cs              // 入口
 ```
 
-共 24 个文件。`Config.cs` 集中所有占位数值，方便后续调平衡。
+共 27 个 C# 脚本。各脚本旁的 Godot `.uid` 文件为资源标识文件，未在树中展开。`.godot/` 为 Godot 生成的缓存目录，未在树中展开。`Config.cs` 集中所有占位数值，方便后续调平衡。
 
 ---
 
