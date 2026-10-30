@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://nmxa2tgpyrax"]
+
+[ext_resource type="Script" uid="uid://ct751d32dpmpn" path="res://ui/BenchPanel.cs" id="1_jmslw"]
+
+[node name="BenchPanel" type="Node2D" unique_id=548012091]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1045064390]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_jmslw")

@@ -1,4 +1,6 @@
 using CoopDefense.Core;
+using System.Collections.Generic;
+using CoopDefense.Units;
 
 namespace CoopDefense.Player
 {
@@ -9,6 +11,10 @@ namespace CoopDefense.Player
         public float MaxStamina { get; set; } = Config.StaminaMax;
         public bool IsEliminated { get; set; } = false;
         public int Coins { get; set; }
+        public int SelectedCardIndex { get; set; } = -1;
+        public int SelectedCardPrice { get; set; } = 0;
+        // 备战席（手牌）：用来存放买下来的材料卡
+        public List<Card> Bench { get; private set; } = new List<Card>();
         public PlayerState(int id)
         {
             PlayerId = id;

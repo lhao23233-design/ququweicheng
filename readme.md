@@ -75,10 +75,12 @@
 
 全局唯一合作/建设成本。部署、移动、建造、加工、小人合作手操都消耗体力。自己领地内小人移动不耗体力只耗时间；跨领地合作手操耗体力，有搬运上限，耗尽自动返回，被攻击减体力。
 
-### 抽卡与升本
+### 抽卡、材料与部署
 
-- 抽卡：一页 N 张（基础 3，上限 6），**多选，每张单独付费**，不选不扣费，抽取卡每轮战斗结束消失，开展期面板仍可访问。
-- 升本：耗升本经验（代币购买 + 打精英/反拦截掉落），降低卡价、提升抽卡页选项上限。
+- **抽卡（买材料）**：一页 N 张（基础 3，上限 6），多选，每张单独付费。花费代币买到的是“材料/组件卡”，直接进入玩家的**“备战席”**（手牌区），不直接在地图上生成实物。
+- **部署（合成）**：玩家从备战席选择材料，消耗**体力**和**物理时间**（读条）进行合成/部署，成功后在场上生成对应的装置或单位。
+- **升本**：耗升本经验（代币购买 + 打精英/反拦截掉落），降低卡价、提升抽卡页选项上限。
+- **卡牌保留**：未购买的卡页在开展期仍可访问，但每轮战斗结束（进入结算）时，当前页未买的卡和备战席未合成的卡都会清空/消失，逼迫玩家在“囤积”与“变现”中做取舍。
 
 ### 传递与拦截
 
@@ -115,44 +117,45 @@
   ququweicheng-v0.1.0.sln
   readme.md
   /core
-    Config.cs            // 所有占位常量集中在这里
-    GameLoop.cs          // 休整/开展/结算状态切换与玩家状态
-    GameState.cs         // 运行时数据容器
-    TimeAxis.cs          // [空，待实现] 个人时间轴（资源抽取）
-    EventBus.cs          // [空，待实现] 事件总线（UI/数据解耦）
+	Config.cs            // 所有占位常量集中在这里
+	GameLoop.cs          // 休整/开展/结算状态切换与玩家状态
+	GameState.cs         // 运行时数据容器
+	TimeAxis.cs          // [空，待实现] 个人时间轴（资源抽取）
+	EventBus.cs          // [空，待实现] 事件总线（UI/数据解耦）
   /player
-    PlayerState.cs       // 玩家体力、代币等状态
-    StaminaSystem.cs     // 体力消耗与回复
-    EconomySystem.cs     // [空，待实现] 代币、升本、中继经验
-    CardSystem.cs        // 卡池刷新、购买扣费与战斗结束清空
+	PlayerState.cs       // 玩家体力、代币等状态
+	StaminaSystem.cs     // 体力消耗与回复
+	EconomySystem.cs     // [空，待实现] 代币、升本、中继经验
+	CardSystem.cs        // 卡池刷新、购买扣费与战斗结束清空
   /units
-    Unit.cs              // 单位原型：索敌并尝试攻击（敌人伤害待接入）
-    CooldownSystem.cs    // [空，待实现] 冷却计时
-    card.cs              // 卡牌数据
-    CardNPC.cs           // 移动、受击与到达时发放测试代币
+	Unit.cs              // 单位原型：索敌并尝试攻击（敌人伤害待接入）
+	CooldownSystem.cs    // [空，待实现] 冷却计时
+	card.cs              // 卡牌数据
+	CardNPC.cs           // 移动、受击与到达时发放测试代币
   /logistics
-    DeliverySystem.cs    // [空，待实现] 相邻传递、运输单位移动
-    InterceptionSystem.cs// [空，待实现] 嘲讽词条、三方配合、双倍悬赏
-    CourierSystem.cs     // [空，待实现] 小人移动与合作手操
-    TopologyGraph.cs     // [空，待实现] 固定 2 人线段拓扑
+	DeliverySystem.cs    // [空，待实现] 相邻传递、运输单位移动
+	InterceptionSystem.cs// [空，待实现] 嘲讽词条、三方配合、双倍悬赏
+	CourierSystem.cs     // [空，待实现] 小人移动与合作手操
+	TopologyGraph.cs     // [空，待实现] 固定 2 人线段拓扑
   /combat
-    EnemySpawner.cs      // [空，待实现] 出怪、精英密度
-    EnemyEvolution.cs    // [空，待实现] 全局进化
-    BossSystem.cs        // [空，待实现] 小 Boss
-    CrystalSystem.cs     // [空，待实现] 小水晶耐久、出局判定
-    Enemy.cs             // 索敌并攻击附近的卡盒 NPC
+	EnemySpawner.cs      // [空，待实现] 出怪、精英密度
+	EnemyEvolution.cs    // [空，待实现] 全局进化
+	BossSystem.cs        // [空，待实现] 小 Boss
+	CrystalSystem.cs     // [空，待实现] 小水晶耐久、出局判定
+	Enemy.cs             // 索敌并攻击附近的卡盒 NPC
   /ai
-    BotController.cs     // [空，待实现] 机器人决策
+	BotController.cs     // [空，待实现] 机器人决策
   /data
-    MatchRecorder.cs     // [空，待实现] 对局数据采集
-    LocalDatabase.cs     // [空，待实现] JSON 本地存储
+	MatchRecorder.cs     // [空，待实现] 对局数据采集
+	LocalDatabase.cs     // [空，待实现] JSON 本地存储
   /ui
-    HUD.cs               // 当前显示阶段、倒计时和体力
-    CardPanel.cs         // 卡牌购买与体力测试按钮
-    MapView.cs           // [空，待实现] 领地 + 小人视图
-    SettlementPanel.cs   // [空，待实现] 结算数据表单
+	HUD.cs               // 当前显示阶段、倒计时和体力
+	CardPanel.cs         // 卡牌购买与体力测试按钮
+	MapView.cs           // [空，待实现] 领地 + 小人视图
+	BenchPanel.cs        // [新增] 备战席 UI（显示持有材料，触发合成/放置模式）
+	SettlementPanel.cs   // [空，待实现] 结算数据表单
   /main
-    Main.cs              // [空，待实现] 入口逻辑
+	Main.cs              // [空，待实现] 入口逻辑
 ```
 
 共 30 个 C# 脚本，其中 18 个为空文件，已在上方标记“空，待实现”。各脚本旁的 Godot `.uid` 文件及 `.godot/` 生成缓存目录未在树中展开。`Config.cs` 集中占位数值，方便后续调平衡。
@@ -167,8 +170,8 @@
 |---|---|---|
 | 1 | 状态机空转 | 状态切换正确；开发阶段用 3s 测试，最终目标为 60s |
 | 2 | 体力与代币 | 休整/开展回复速率不同，代币按个人时间轴产出 |
-| 3 | 抽卡与升本 | 多选扣费、开展期可访问、升本降价提上限 |
-| 4 | 单位与敌人 | 部署扣体力、冷却表现、漏怪扣耐久 |
+| 3 | 抽卡与备战席 | 花代币买卡进入备战席，卡槽 UI 更新，代币扣除 |
+| 4 | 物理合成与部署 | 选中备战席材料，点地图扣体力并进入“读条时间”，完成后生成装置 |
 | 5 | 传递与拦截 | 合作触发嘲讽怪、三方配合有收益、不合作小人安全 |
 | 6 | 小 Boss | 逃出扣耐久、击杀给赏金 + 升本经验 |
 | 7 | 机器人 | 不挂机、不恶意不合作、能基本防守 |
@@ -187,6 +190,7 @@
 1. 数值是否从 `Config.cs` 取，没有硬编码。
 2. 状态修改是否通过 `EventBus` 通知 UI，没有直接操作 UI。
 3. 是否修改了不该修改的状态（比如 UI 层直接改体力）。
+4. **【新增】购买与部署是否严格分离**：点卡牌按钮只应改变“备战席数组”和“代币”；只有在地图上点击放置时，才应执行“体力扣除”与“时间读条”。
 
 **动画层原则**：冷却由 C# 计时器判定，Godot AnimationPlayer/AnimationTree 只负责表现。不用动画回调驱动游戏逻辑。冷却时长和动画时长从同一个数值源取。
 
@@ -196,45 +200,45 @@
 
 ```csharp
 public static class Config {
-    // 时间
-    public const float RestPhaseDuration = 3f;
-    public const float CombatPhaseDuration = 3f;
+	// 时间
+	public const float RestPhaseDuration = 3f;
+	public const float CombatPhaseDuration = 3f;
 
-    // 体力
-    public const float StaminaMax = 100f;
-    public const float StaminaRestRestore = 20f;
-    public const float StaminaCombatRestore = 2f;
-    public const float StaminaDeploy = 10f;
-    public const float StaminaMove = 5f;
-    public const float StaminaCoopPerSec = 5f;
-    public const float CourierStaminaMax = 50f;
+	// 体力
+	public const float StaminaMax = 100f;
+	public const float StaminaRestRestore = 20f;
+	public const float StaminaCombatRestore = 2f;
+	public const float StaminaDeploy = 10f;
+	public const float StaminaMove = 5f;
+	public const float StaminaCoopPerSec = 5f;
+	public const float CourierStaminaMax = 50f;
 
-    // 经济
-    public const int CoinsBasePerRound = 10;
-    public const int CoinsVariance = 3;
-    public const int CardPriceBase = 5;
-    public const int CardPageSizeBase = 3;
-    public const int CardPageSizeMax = 6;
+	// 经济
+	public const int CoinsBasePerRound = 10;
+	public const int CoinsVariance = 3;
+	public const int CardPriceBase = 5;
+	public const int CardPageSizeBase = 3;
+	public const int CardPageSizeMax = 6;
 
-    // 升本
-    public const int AscendExpPerLevel = 10;
-    public const int AscendCardDiscount = 1;
-    public const int RelayExpDiscountMax = 3;
+	// 升本
+	public const int AscendExpPerLevel = 10;
+	public const int AscendCardDiscount = 1;
+	public const int RelayExpDiscountMax = 3;
 
-    // 敌人
-    public const int WaveBaseCount = 5;
-    public const int EliteDensityPerEvolution = 1;
+	// 敌人
+	public const int WaveBaseCount = 5;
+	public const int EliteDensityPerEvolution = 1;
 
-    // 小Boss
-    public const int MiniBossCrystalDamage = 5;
-    public const int MiniBossBounty = 20;
+	// 小Boss
+	public const int MiniBossCrystalDamage = 5;
+	public const int MiniBossBounty = 20;
 
-    // 水晶
-    public const int CrystalDurabilityMax = 100;
-    public const int SmallEnemyCrystalDamage = 1;
+	// 水晶
+	public const int CrystalDurabilityMax = 100;
+	public const int SmallEnemyCrystalDamage = 1;
 
-    // 资源抽取
-    public const float ResourceTickInterval = 10f;
+	// 资源抽取
+	public const float ResourceTickInterval = 10f;
 }
 ```
 

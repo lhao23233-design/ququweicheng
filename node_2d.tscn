@@ -1,13 +1,15 @@
 [gd_scene format=3 uid="uid://cuhfhggeeaq6s"]
 
+[ext_resource type="Script" uid="uid://qwaj2qfxdk74" path="res://ui/MapView.cs" id="1_d21ai"]
 [ext_resource type="Script" uid="uid://dueml43e7rt53" path="res://ui/HUD.cs" id="1_epypp"]
 [ext_resource type="Script" uid="uid://cojt82lais7sm" path="res://core/GameLoop.cs" id="1_wtcfe"]
 [ext_resource type="Script" uid="uid://cl4l6rrirwg3k" path="res://ui/CardPanel.cs" id="3_epypp"]
 [ext_resource type="PackedScene" uid="uid://bt8l17m5va4r3" path="res://CardNPC.tscn" id="4_0hol4"]
 [ext_resource type="PackedScene" uid="uid://8qwfikgmc0d0" path="res://Enemy.tscn" id="5_kdubu"]
-[ext_resource type="Script" uid="uid://bdy5sy7jx8wfd" path="res://combat/Enemy.cs" id="6_d21ai"]
+[ext_resource type="Script" uid="uid://ct751d32dpmpn" path="res://ui/BenchPanel.cs" id="6_kdubu"]
 
 [node name="Node2D" type="Node2D" unique_id=1154050608]
+script = ExtResource("1_d21ai")
 
 [node name="HUD" type="Label" parent="." unique_id=879517376]
 offset_right = 300.0
@@ -29,4 +31,10 @@ position = Vector2(500, 300)
 
 [node name="Enemy" parent="." unique_id=150289272 instance=ExtResource("5_kdubu")]
 position = Vector2(600, 300)
-script = ExtResource("6_d21ai")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=127239247]
+offset_left = 27.0
+offset_top = 366.0
+offset_right = 249.0
+offset_bottom = 580.0
+script = ExtResource("6_kdubu")

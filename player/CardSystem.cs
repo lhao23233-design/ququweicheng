@@ -34,7 +34,8 @@ namespace CoopDefense.Player
             if (_player.Coins >= card.Price)
             {
                 _player.Coins -= card.Price;
-                GD.Print($"购买成功: {card.Name}，花费 {card.Price} 代币，剩余 {_player.Coins}");
+                _player.Bench.Add(card); // 将卡片加入玩家的备战席
+                GD.Print($"购买成功: {card.Name}，花费 {card.Price} 代币，已加入备战席。");
                 return true;
             }
             GD.Print("代币不足！");
