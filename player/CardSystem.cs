@@ -40,5 +40,9 @@ namespace CoopDefense.Player
             GD.Print("代币不足！");
             return false;
         }
+         public void OnCombatEnd()
+        {
+            _currentPage.Clear();
+        }
     }
 }

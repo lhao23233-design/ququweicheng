@@ -2,6 +2,10 @@
 
 [ext_resource type="Script" uid="uid://dueml43e7rt53" path="res://ui/HUD.cs" id="1_epypp"]
 [ext_resource type="Script" uid="uid://cojt82lais7sm" path="res://core/GameLoop.cs" id="1_wtcfe"]
+[ext_resource type="Script" uid="uid://cl4l6rrirwg3k" path="res://ui/CardPanel.cs" id="3_epypp"]
+[ext_resource type="PackedScene" uid="uid://bt8l17m5va4r3" path="res://CardNPC.tscn" id="4_0hol4"]
+[ext_resource type="PackedScene" uid="uid://8qwfikgmc0d0" path="res://Enemy.tscn" id="5_kdubu"]
+[ext_resource type="Script" uid="uid://bdy5sy7jx8wfd" path="res://combat/Enemy.cs" id="6_d21ai"]
 
 [node name="Node2D" type="Node2D" unique_id=1154050608]
 
@@ -12,3 +16,17 @@ script = ExtResource("1_epypp")
 
 [node name="GameLoop" type="Node" parent="." unique_id=637401558]
 script = ExtResource("1_wtcfe")
+
+[node name="cardpanel" type="VBoxContainer" parent="." unique_id=12346694]
+offset_left = 1.0
+offset_top = 194.0
+offset_right = 184.0
+offset_bottom = 329.0
+script = ExtResource("3_epypp")
+
+[node name="CardNPC" parent="." unique_id=1710352245 instance=ExtResource("4_0hol4")]
+position = Vector2(500, 300)
+
+[node name="Enemy" parent="." unique_id=150289272 instance=ExtResource("5_kdubu")]
+position = Vector2(600, 300)
+script = ExtResource("6_d21ai")

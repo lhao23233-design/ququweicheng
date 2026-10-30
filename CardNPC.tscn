@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://bt8l17m5va4r3"]
+
+[ext_resource type="Script" uid="uid://cei2wm6lxxod6" path="res://units/CardNPC.cs" id="1_njc11"]
+
+[node name="CardNPC" type="Node2D" unique_id=1710352245]
+script = ExtResource("1_njc11")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1221231450]
+offset_right = 40.0
+offset_bottom = 40.0

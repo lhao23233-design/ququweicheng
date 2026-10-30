@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://8qwfikgmc0d0"]
+
+[ext_resource type="Script" uid="uid://bdy5sy7jx8wfd" path="res://combat/Enemy.cs" id="1_tt7e2"]
+
+[node name="Enemy" type="Node2D" unique_id=150289272]
+script = ExtResource("1_tt7e2")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=801230572]
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.9647059, 0, 0.050980393, 0.99215686)
