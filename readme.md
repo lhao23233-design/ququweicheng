@@ -21,11 +21,11 @@
 
 | 项 | 选型 |
 |---|---|
-| 引擎 | Unity 6.3 LTS |
-| 语言 | C#（全部逻辑） |
-| UI | uGUI（Canvas + Text/Button/Image） |
-| 单位表现 | 2D 方块或简单 Sprite，Animator 驱动冷却表现 |
-| 数据 | JSON 文件（`Application.persistentDataPath`） |
+| 引擎 | Godot 4.7.2 |
+| 语言 | C#（.NET 8） |
+| UI | Godot Control 节点（当前使用 Label、Button、VBoxContainer） |
+| 单位表现 | 计划使用 2D 方块或简单 Sprite，动画由 Godot AnimationPlayer/AnimationTree 驱动 |
+| 数据 | 计划使用 JSON 本地存储（当前尚未实现） |
 | 网络 | 不实现，接口留空 |
 | 第三方库 | 无 |
 
@@ -36,7 +36,7 @@
 ### 做
 
 - 1 真人 + 1 机器人
-- 休整期 60s / 开展期 60s 循环
+- 目标为休整期 60s / 开展期 60s 循环（当前代码使用 3s 测试时长）
 - 体力系统（建设与合作共用一条体力）
 - 抽卡（一页 3 张、多选、单独付费、开展期保留）
 - 升本（降卡价、提选项上限）
@@ -60,8 +60,8 @@
 
 ### 时间结构
 
-- **休整期 60s**：体力回复快，建造/抽卡/升本/部署。
-- **开展期 60s**：体力缓慢回复，敌人涌入，合作传递开放。
+- **目标休整期 60s**：体力回复快，建造/抽卡/升本/部署（当前代码为 3s 测试时长）。
+- **目标开展期 60s**：体力缓慢回复，敌人涌入，合作传递开放（当前代码为 3s 测试时长）。
 - 资源抽取按**个人时间轴**，不受队友影响。
 
 ### 体力
@@ -100,50 +100,51 @@
   .gitignore
   icon.svg
   icon.svg.import
-  main.tscn
+  node_2d.tscn          // 当前主场景
   project.godot
   ququweicheng-v0.1.0.csproj
   ququweicheng-v0.1.0.sln
   readme.md
   /core
     Config.cs            // 所有占位常量集中在这里
-    GameLoop.cs          // 状态机：休整/开展/结算/小Boss
+    GameLoop.cs          // 休整/开展/结算状态切换与玩家状态
     GameState.cs         // 运行时数据容器
-    TimeAxis.cs          // 个人时间轴（资源抽取）
-    EventBus.cs          // 事件总线（UI/数据解耦）
+    TimeAxis.cs          // [空，待实现] 个人时间轴（资源抽取）
+    EventBus.cs          // [空，待实现] 事件总线（UI/数据解耦）
   /player
     PlayerState.cs       // 体力、代币、升本经验、水晶耐久
     StaminaSystem.cs     // 体力消耗与回复
-    EconomySystem.cs     // 代币、升本、中继经验
-    CardSystem.cs        // 抽卡：一页多选、单独付费、开展期保留
+    EconomySystem.cs     // [空，待实现] 代币、升本、中继经验
+    CardSystem.cs        // 卡池刷新与购买扣费（多选等规则待完善）
   /units
-    Unit.cs              // 单位基类
-    CooldownSystem.cs    // 冷却计时 + Animator 参数桥
+    Unit.cs              // [空，待实现] 单位基类
+    CooldownSystem.cs    // [空，待实现] 冷却计时
+    card.cs              // 卡牌数据
   /logistics
-    DeliverySystem.cs    // 相邻传递、运输单位移动
-    InterceptionSystem.cs// 嘲讽词条、三方配合、双倍悬赏
-    CourierSystem.cs     // 小人：只读访问、合作手操、体力上限
-    TopologyGraph.cs     // 固定 2 人线段拓扑（留消除接口）
+    DeliverySystem.cs    // [空，待实现] 相邻传递、运输单位移动
+    InterceptionSystem.cs// [空，待实现] 嘲讽词条、三方配合、双倍悬赏
+    CourierSystem.cs     // [空，待实现] 小人移动与合作手操
+    TopologyGraph.cs     // [空，待实现] 固定 2 人线段拓扑
   /combat
-    EnemySpawner.cs      // 出怪、精英密度
-    EnemyEvolution.cs    // 全局进化（占位，单机不触发）
-    BossSystem.cs        // 小Boss
-    CrystalSystem.cs     // 小水晶耐久、出局判定
+    EnemySpawner.cs      // [空，待实现] 出怪、精英密度
+    EnemyEvolution.cs    // [空，待实现] 全局进化
+    BossSystem.cs        // [空，待实现] 小 Boss
+    CrystalSystem.cs     // [空，待实现] 小水晶耐久、出局判定
   /ai
-    BotController.cs     // 机器人最简决策
+    BotController.cs     // [空，待实现] 机器人决策
   /data
-    MatchRecorder.cs     // 数据表单采集
-    LocalDatabase.cs     // JSON 存本地
+    MatchRecorder.cs     // [空，待实现] 对局数据采集
+    LocalDatabase.cs     // [空，待实现] JSON 本地存储
   /ui
-    HUD.cs               // 体力、代币、升本经验、冷却
-    CardPanel.cs         // 抽卡面板
-    MapView.cs           // 领地 + 小人视图
-    SettlementPanel.cs   // 结算数据表单
+    HUD.cs               // 当前显示阶段、倒计时和体力
+    CardPanel.cs         // 卡牌购买与体力测试按钮
+    MapView.cs           // [空，待实现] 领地 + 小人视图
+    SettlementPanel.cs   // [空，待实现] 结算数据表单
   /main
-    Main.cs              // 入口
+    Main.cs              // [空，待实现] 入口逻辑
 ```
 
-共 27 个 C# 脚本。各脚本旁的 Godot `.uid` 文件为资源标识文件，未在树中展开。`.godot/` 为 Godot 生成的缓存目录，未在树中展开。`Config.cs` 集中所有占位数值，方便后续调平衡。
+共 28 个 C# 脚本，其中 19 个为空文件，已在上方标记“空，待实现”。各脚本旁的 Godot `.uid` 文件及 `.godot/` 生成缓存目录未在树中展开。`Config.cs` 集中占位数值，方便后续调平衡。
 
 ---
 
@@ -153,7 +154,7 @@
 
 | 步骤 | 内容 | 验证点 |
 |---|---|---|
-| 1 | 状态机空转 | 状态切换正确，60s 计时准确 |
+| 1 | 状态机空转 | 状态切换正确；开发阶段用 3s 测试，最终目标为 60s |
 | 2 | 体力与代币 | 休整/开展回复速率不同，代币按个人时间轴产出 |
 | 3 | 抽卡与升本 | 多选扣费、开展期可访问、升本降价提上限 |
 | 4 | 单位与敌人 | 部署扣体力、冷却表现、漏怪扣耐久 |
@@ -176,7 +177,7 @@
 2. 状态修改是否通过 `EventBus` 通知 UI，没有直接操作 UI。
 3. 是否修改了不该修改的状态（比如 UI 层直接改体力）。
 
-**动画层原则**：冷却由 C# 计时器判定，Animator 只接收参数表现。不用动画 Event 回调驱动游戏逻辑。冷却时长和动画时长从同一个数值源取。
+**动画层原则**：冷却由 C# 计时器判定，Godot AnimationPlayer/AnimationTree 只负责表现。不用动画回调驱动游戏逻辑。冷却时长和动画时长从同一个数值源取。
 
 ---
 
@@ -185,8 +186,8 @@
 ```csharp
 public static class Config {
     // 时间
-    public const float RestPhaseDuration = 60f;
-    public const float CombatPhaseDuration = 60f;
+    public const float RestPhaseDuration = 3f;
+    public const float CombatPhaseDuration = 3f;
 
     // 体力
     public const float StaminaMax = 100f;
@@ -232,7 +233,7 @@ public static class Config {
 
 ## 后续路线（不在当前原型内）
 
-1. 联机：先评估 Unity Netcode for GameObjects + Relay 是否够用。
+1. 联机：评估 Godot 高级多人游戏 API 是否满足需求。
 2. 减法地图：出局者格子消除，3 人三角形、2 人线段、1 人单点。
 3. 大 Boss：毒圈压缩、设施移动意外事件、大水晶。
 4. 评级与称号：基于数据表单的多维评级，历史记录页。
