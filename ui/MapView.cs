@@ -42,8 +42,9 @@ public partial class MapView : Node2D
 	private void SpawnTower(Vector2 pos)
 	{
 		// 用代码直接生成一个白方块测试
-		var tower = new Node2D();
+		var tower = new CoopDefense.Units.Unit();
 		var visual = new ColorRect { Color = Colors.White, Size = new Vector2(40, 40) };
+		visual.Position = new Vector2(-visual.Size.X / 2, -visual.Size.Y / 2);//先把方块的中心点对齐到塔的中心点
 		tower.AddChild(visual);
 		tower.Position = pos;
 		AddChild(tower);

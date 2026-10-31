@@ -58,7 +58,8 @@
 
 - 已有：阶段计时与轮次递增、玩家体力/代币状态、卡牌购买并加入备战席。
 - 已有：备战席材料选择；点击地图可立即扣体力并生成测试方块（尚无读条、单位类型合成或放置规则）。
-- 测试场景包含移动中的卡盒 NPC 和会攻击附近 NPC 的敌人；防守单位目前只索敌并打印攻击日志，尚未对敌人造成伤害。
+- 开展期会定时刷出向左移动的小怪；小怪会优先攻击附近防守单位，其次攻击卡盒 NPC，漏怪时扣水晶耐久。
+- 防守单位已有索敌和攻击原型，可对敌人造成伤害；但地图放置目前生成的是测试方块，尚未与防守单位部署打通。
 - 尚未实现：机器人、完整经济/升本、物流合作、Boss、结算数据采集与本地存档。目录中标记为空的脚本仍待实现。
 - 目前休整期、开展期和结算期均为 3 秒测试时长；目标时长仍为休整期/开展期各 60 秒。
 
@@ -125,42 +126,42 @@
 	TimeAxis.cs          // [空，待实现] 个人时间轴（资源抽取）
 	EventBus.cs          // [空，待实现] 事件总线（UI/数据解耦）
   /player
-    PlayerState.cs       // 玩家体力、代币、备战席与选中卡牌
-    StaminaSystem.cs     // 体力回复
-    EconomySystem.cs     // [空，待实现] 代币、升本、中继经验
-    CardSystem.cs        // 卡池刷新、购买扣费并加入备战席
+	PlayerState.cs       // 玩家体力、代币、备战席与选中卡牌
+	StaminaSystem.cs     // 体力回复
+	EconomySystem.cs     // [空，待实现] 代币、升本、中继经验
+	CardSystem.cs        // 卡池刷新、购买扣费并加入备战席
   /units
-    Unit.cs              // 单位原型：索敌并打印攻击日志
-    CooldownSystem.cs    // [空，待实现] 冷却计时
-    card.cs              // 卡牌数据
-    CardNPC.cs           // 移动、受击与到达时发放测试代币
+	Unit.cs              // 防守单位：索敌、攻击敌人并承受伤害
+	CooldownSystem.cs    // [空，待实现] 冷却计时
+	card.cs              // 卡牌数据
+	CardNPC.cs           // 移动、受击与到达时发放测试代币
   /logistics
 	DeliverySystem.cs    // [空，待实现] 相邻传递、运输单位移动
 	InterceptionSystem.cs// [空，待实现] 嘲讽词条、三方配合、双倍悬赏
 	CourierSystem.cs     // [空，待实现] 小人移动与合作手操
 	TopologyGraph.cs     // [空，待实现] 固定 2 人线段拓扑
   /combat
-	EnemySpawner.cs      // [空，待实现] 出怪、精英密度
+	EnemySpawner.cs      // 开展期定时生成小怪
 	EnemyEvolution.cs    // [空，待实现] 全局进化
 	BossSystem.cs        // [空，待实现] 小 Boss
 	CrystalSystem.cs     // [空，待实现] 小水晶耐久、出局判定
-	Enemy.cs             // 索敌并攻击附近的卡盒 NPC
+	Enemy.cs             // 移动、攻击目标、受伤死亡与漏怪扣水晶
   /ai
 	BotController.cs     // [空，待实现] 机器人决策
   /data
 	MatchRecorder.cs     // [空，待实现] 对局数据采集
 	LocalDatabase.cs     // [空，待实现] JSON 本地存储
   /ui
-    HUD.cs               // 显示阶段、倒计时、体力和代币
-    CardPanel.cs         // 卡池购买按钮
-    MapView.cs           // 地图点击放置测试方块并扣体力
-    BenchPanel.cs        // 显示备战席材料并选择待放置卡
-    SettlementPanel.cs   // [空，待实现] 结算数据表单
+	HUD.cs               // 显示阶段、倒计时、体力和代币
+	CardPanel.cs         // 卡池购买按钮
+	MapView.cs           // 地图点击放置测试方块并扣体力
+	BenchPanel.cs        // 显示备战席材料并选择待放置卡
+	SettlementPanel.cs   // [空，待实现] 结算数据表单
   /main
-    Main.cs              // [空，待实现] 入口逻辑（当前由 node_2d.tscn 启动）
+	Main.cs              // [空，待实现] 入口逻辑（当前由 node_2d.tscn 启动）
 ```
 
-共 31 个 C# 脚本，其中 17 个为空文件，已在上方标记“空，待实现”。各脚本旁的 Godot `.uid` 文件及 `.godot/` 生成缓存目录未在树中展开。`Config.cs` 集中占位数值，方便后续调平衡。
+共 31 个 C# 脚本，其中 16 个为空文件，已在上方标记“空，待实现”。各脚本旁的 Godot `.uid` 文件及 `.godot/` 生成缓存目录未在树中展开。`Config.cs` 集中占位数值，方便后续调平衡。
 
 ---
 
@@ -174,12 +175,13 @@
 | 2 | 体力与代币 | 休整/开展回复速率不同，代币按个人时间轴产出 |
 | 3 | 抽卡与备战席 | 当前可验证：逐张购买并加入备战席 |
 | 4 | 物理合成与部署 | 当前仅有即时测试方块放置；待实现读条及对应装置生成 |
-| 5 | 传递与拦截 | 合作触发嘲讽怪、三方配合有收益、不合作小人安全 |
-| 6 | 小 Boss | 逃出扣耐久、击杀给赏金 + 升本经验 |
-| 7 | 机器人 | 不挂机、不恶意不合作、能基本防守 |
-| 8 | 数据表单 | 采集、显示、本地 JSON 存取 |
+| 5 | 敌人与防守单位 | 小怪移动、攻击目标和漏怪扣水晶已实现；防守单位仍未接入部署流程 |
+| 6 | 传递与拦截 | 合作触发嘲讽怪、三方配合有收益、不合作小人安全 |
+| 7 | 小 Boss | 逃出扣耐久、击杀给赏金 + 升本经验 |
+| 8 | 机器人 | 不挂机、不恶意不合作、能基本防守 |
+| 9 | 数据表单 | 采集、显示、本地 JSON 存取 |
 
-**单位攻击方式目标**：原型计划采用**自动攻击**（射程内自动攻击），不做点击瞄准。当前防守单位仅验证索敌，敌人尚未实际扣血。
+**单位攻击方式目标**：原型计划采用**自动攻击**（射程内自动攻击），不做点击瞄准。当前防守单位已有索敌和伤害原型，但还没有通过地图部署流程生成防守单位。
 
 ---
 
@@ -239,6 +241,17 @@ public static class Config {
 	// 水晶
 	public const int CrystalDurabilityMax = 100;
 	public const int SmallEnemyCrystalDamage = 1;
+
+	// 小怪
+	public const float EnemyMaxHealth = 50f;
+	public const float EnemyMoveSpeed = 80f;
+	public const float EnemyAttackDamage = 10f;
+	public const float EnemyAttackInterval = 1f;
+	public const float EnemyAttackRange = 60f;
+	public const float EnemyIdleAttackRetryInterval = 0.1f;
+	public const float EnemyDefenseDamageMultiplier = 5f;
+	public const float EnemyLeakBoundaryX = -50f;
+	public const float EnemyCollisionSize = 40f;
 
 	// 资源抽取
 	public const float ResourceTickInterval = 10f;

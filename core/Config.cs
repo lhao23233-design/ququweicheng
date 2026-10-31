@@ -37,6 +37,17 @@ public static class Config {
 	public const int CrystalDurabilityMax = 100;
 	public const int SmallEnemyCrystalDamage = 1;
 
+	// 小怪
+	public const float EnemyMaxHealth = 50f;
+	public const float EnemyMoveSpeed = 80f;
+	public const float EnemyAttackDamage = 10f;
+	public const float EnemyAttackInterval = 1f;
+	public const float EnemyAttackRange = 60f;
+	public const float EnemyIdleAttackRetryInterval = 0.1f;
+	public const float EnemyDefenseDamageMultiplier = 5f;
+	public const float EnemyLeakBoundaryX = -50f;
+	public const float EnemyCollisionSize = 40f;
+
 	// 资源抽取
 	public const float ResourceTickInterval = 10f;
 }

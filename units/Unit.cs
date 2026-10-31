@@ -2,7 +2,7 @@ using Godot;
 
 namespace CoopDefense.Units
 {
-    public partial class Unit : Node2D
+    public partial class Unit : CharacterBody2D // 1. 改为 CharacterBody2D 才能有物理碰撞
     {
         [Export] public int OwnerPlayerId { get; set; } = 1;
         [Export] public float MaxHealth { get; set; } = 100f;
@@ -17,6 +17,11 @@ namespace CoopDefense.Units
         {
             _currentHealth = MaxHealth;
             AddToGroup("DefenseUnits"); // 方便敌人索敌
+            
+            // 2. 动态加一个碰撞框，这样怪撞上来才会停下
+            var collision = new CollisionShape2D();
+            collision.Shape = new RectangleShape2D { Size = new Vector2(40, 40) };
+            AddChild(collision);
         }
 
         public override void _Process(double delta)
@@ -30,9 +35,20 @@ namespace CoopDefense.Units
             }
         }
 
+        // 3. 新增：被怪物攻击时扣血
+        public void TakeDamage(float damage)
+        {
+            _currentHealth -= damage;
+            GD.Print($"炮塔受损！剩余血量: {_currentHealth}");
+            if (_currentHealth <= 0)
+            {
+                GD.Print("炮塔被摧毁！");
+                QueueFree(); // 销毁自己，给怪让路
+            }
+        }
+
         private void AttackNearestEnemy()
         {
-            // 找场景里的所有敌人
             var enemies = GetTree().GetNodesInGroup("Enemies");
             Node2D nearestEnemy = null;
             float minDistance = float.MaxValue;
@@ -52,8 +68,11 @@ namespace CoopDefense.Units
 
             if (nearestEnemy != null)
             {
-                GD.Print($"炮塔开火！攻击敌人 {nearestEnemy.Name}");
-                // 这里暂时不写扣血逻辑，先证明能索敌
+                GD.Print($"炮塔开火！攻击距离: {minDistance:F1}");        
+                if (nearestEnemy is CoopDefense.Combat.Enemy enemyScript)
+                {
+                    enemyScript.TakeDamage(AttackDamage);
+                }
             }
         }
     }
