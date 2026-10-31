@@ -12,7 +12,6 @@ public partial class CardPanel : VBoxContainer
 	{
 		_gameLoop = GetNode<GameLoop>("../GameLoop");
 		_cardSystem = new CardSystem(_gameLoop.State.Player1);
-
 		_cardSystem.RefreshPage();
 
 		for (int i = 0; i < 3; i++)
@@ -35,7 +34,6 @@ public partial class CardPanel : VBoxContainer
 				}
 			};
 		}
-
 		UpdateCardText();
 	}
 

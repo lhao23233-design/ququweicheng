@@ -48,6 +48,20 @@ public static class Config {
 	public const float EnemyLeakBoundaryX = -50f;
 	public const float EnemyCollisionSize = 40f;
 
+	// 运输NPC
+	public const int NpcCallCost = 10;           // 呼叫花费
+	public const float NpcSpawnXMin = 300f;      // 出生点 X 坐标下限
+	public const float NpcSpawnXMax = 400f;      // 出生点 X 坐标上限
+	public const float NpcSpawnY = 0f;        // 出生点 Y 坐标
+	public const float NpcCollisionSize = 30f;   // 碰撞框大小
+	public const float NpcEndY = 900f;	//终点y坐标
+
 	// 资源抽取
 	public const float ResourceTickInterval = 10f;
+
+	//地块&寻路设计
+	public const int CellSize = 64;
+    // 地图网格的宽高（比如 20x15 个格子）
+    public const int GridWidth = 20;
+    public const int GridHeight = 15;
 }

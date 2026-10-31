@@ -134,9 +134,10 @@
 	Unit.cs              // 防守单位：索敌、攻击敌人并承受伤害
 	CooldownSystem.cs    // [空，待实现] 冷却计时
 	card.cs              // 卡牌数据
-	CardNPC.cs           // 移动、受击与到达时发放测试代币
+	CardNPC.cs           // [修改中]玩家主动交互
   /logistics
-	DeliverySystem.cs    // [空，待实现] 相邻传递、运输单位移动
+	Delivery.cs			 // 己方运输单位
+	DeliverySystem.cs    // 相邻传递、运输单位移动[正在修改]
 	InterceptionSystem.cs// [空，待实现] 嘲讽词条、三方配合、双倍悬赏
 	CourierSystem.cs     // [空，待实现] 小人移动与合作手操
 	TopologyGraph.cs     // [空，待实现] 固定 2 人线段拓扑
@@ -157,6 +158,7 @@
 	MapView.cs           // 地图点击放置测试方块并扣体力
 	BenchPanel.cs        // 显示备战席材料并选择待放置卡
 	SettlementPanel.cs   // [空，待实现] 结算数据表单
+	DeliveryPanel.cs	 // 运输相关按钮选项
   /main
 	Main.cs              // [空，待实现] 入口逻辑（当前由 node_2d.tscn 启动）
 ```
@@ -187,7 +189,7 @@
 
 ## 工作流
 
-**注释引导 tab 补全 + 人工审查**。
+**plan模式提问+注释引导 tab 补全 + 人工审查**。
 
 每个文件顶部写规则和依赖，方法前写 TODO 和返回值。tab 补全生成方法体后，人工审查三点：
 

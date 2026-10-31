@@ -35,7 +35,7 @@ namespace CoopDefense.Combat
 			
 			// 给个视觉表现（红方块）
 			var visual = new ColorRect { Color = Colors.Red, Size = new Vector2(40, 40) };
-			visual.Position = new Vector2(-20, -20); // 居中
+			visual.Position = new Vector2(visual.Size.X/2, visual.Size.Y/2); // 居中
 			enemy.AddChild(visual);
 
 			// 刷在屏幕最右侧，Y 随机浮动一点

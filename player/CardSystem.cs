@@ -20,9 +20,9 @@ namespace CoopDefense.Player
         public void RefreshPage()
         {
             _currentPage.Clear();
-            _currentPage.Add(new Card("基础炮塔", Config.CardPriceBase, "防守领地"));
-            _currentPage.Add(new Card("运输加速", Config.CardPriceBase, "加快物资"));
-            _currentPage.Add(new Card("重装步兵", Config.CardPriceBase + 2, "强力抗伤"));
+            _currentPage.Add(new Card("1", Config.CardPriceBase, "防守领地"));
+            _currentPage.Add(new Card("2", Config.CardPriceBase, "加快物资"));
+            _currentPage.Add(new Card("3", Config.CardPriceBase + 2, "强力抗伤"));
             GD.Print("卡池已刷新，当前有 3 张卡。");
         }
 

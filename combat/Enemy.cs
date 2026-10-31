@@ -100,8 +100,8 @@ namespace CoopDefense.Combat
 				return;
 			}
 
-			// 优先攻击挡路的防守单位，再攻击附近的卡盒 NPC。
-			bool attacked = TryAttackDefenseUnit() || TryAttackCardNpc();
+			// 优先攻击挡路的防守单位，再攻击附近的运输单位。
+			bool attacked = TryAttackDefenseUnit() || TryAttackDelivery();
 
 			// 没有目标时短暂重试，避免每帧遍历场景分组。
 			_attackTimer = attacked ? _attackInterval : Config.EnemyIdleAttackRetryInterval;
@@ -122,13 +122,13 @@ namespace CoopDefense.Combat
 			return false;
 		}
 
-		private bool TryAttackCardNpc()
+		private bool TryAttackDelivery()
 		{
-			foreach (Node node in GetTree().GetNodesInGroup("CardNPC"))
+			foreach (Node node in GetTree().GetNodesInGroup("Delivery"))
 			{
-				if (node is CardNPC npc && IsWithinAttackRange(npc))
+				if (node is Delivery delivery && IsWithinAttackRange(delivery))
 				{
-					npc.TakeDamage(_damage);
+					delivery.TakeDamage(_damage);
 					return true;
 				}
 			}

@@ -5,6 +5,8 @@
 [ext_resource type="Script" uid="uid://cojt82lais7sm" path="res://core/GameLoop.cs" id="1_wtcfe"]
 [ext_resource type="Script" uid="uid://cl4l6rrirwg3k" path="res://ui/CardPanel.cs" id="3_epypp"]
 [ext_resource type="Script" uid="uid://ct751d32dpmpn" path="res://ui/BenchPanel.cs" id="6_kdubu"]
+[ext_resource type="Script" uid="uid://cnq6mnff552qu" path="res://logistics/DeliverySystem.cs" id="7_d21ai"]
+[ext_resource type="Script" uid="uid://bo17brcjximmp" path="res://ui/DeliveryPanel.cs" id="8_4d7sh"]
 [ext_resource type="Script" uid="uid://bvm864mp4iuww" path="res://combat/EnemySpawner.cs" id="8_rj586"]
 
 [node name="Node2D" type="Node2D" unique_id=1154050608]
@@ -19,18 +21,26 @@ script = ExtResource("1_epypp")
 script = ExtResource("1_wtcfe")
 
 [node name="cardpanel" type="VBoxContainer" parent="." unique_id=12346694]
-offset_left = 1.0
-offset_top = 194.0
-offset_right = 184.0
-offset_bottom = 329.0
+offset_top = 200.0
+offset_right = 183.0
+offset_bottom = 335.0
 script = ExtResource("3_epypp")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=127239247]
-offset_left = 27.0
-offset_top = 366.0
-offset_right = 249.0
-offset_bottom = 580.0
+[node name="benchpanel" type="HBoxContainer" parent="." unique_id=127239247]
+offset_left = 3.0
+offset_top = 448.0
+offset_right = 403.0
+offset_bottom = 648.0
 script = ExtResource("6_kdubu")
 
 [node name="EnemySpawner" type="Node" parent="." unique_id=1357455041]
 script = ExtResource("8_rj586")
+
+[node name="DeliverySystem" type="Node" parent="." unique_id=1792174592]
+script = ExtResource("7_d21ai")
+
+[node name="Button" type="Button" parent="." unique_id=129802439]
+offset_left = 646.0
+offset_right = 846.0
+offset_bottom = 200.0
+script = ExtResource("8_4d7sh")
