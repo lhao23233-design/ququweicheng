@@ -1,6 +1,7 @@
 using Godot;
 using CoopDefense.Core;
 using CoopDefense.Units;
+using CoopDefense.Entities;
 
 namespace CoopDefense.Combat
 {
@@ -24,6 +25,7 @@ namespace CoopDefense.Combat
 			{
 				GD.PushError($"{nameof(Enemy)} requires a GameLoop node to apply crystal damage.");
 			}
+			GD.Print($"我出生在: {Position}");
 		}
 
 		public override void _PhysicsProcess(double delta)

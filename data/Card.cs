@@ -1,4 +1,4 @@
-namespace CoopDefense.Units
+namespace CoopDefense.Data
 {
     public class Card
     {

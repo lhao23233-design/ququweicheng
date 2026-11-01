@@ -1,8 +1,7 @@
 using CoopDefense.Core;
 using System.Collections.Generic;
-using CoopDefense.Units;
 
-namespace CoopDefense.Player
+namespace CoopDefense.Data
 {
     public class PlayerState
     {

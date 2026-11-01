@@ -34,14 +34,12 @@ namespace CoopDefense.Combat
 			var enemy = new Enemy();
 			
 			// 给个视觉表现（红方块）
-			var visual = new ColorRect { Color = Colors.Red, Size = new Vector2(40, 40) };
+			var visual = new ColorRect { Color = Colors.Red, Size = new Vector2(64, 64) };
 			visual.Position = new Vector2(visual.Size.X/2, visual.Size.Y/2); // 居中
 			enemy.AddChild(visual);
 
-			// 刷在屏幕最右侧，Y 随机浮动一点
-			float randomY = (float)GD.RandRange(200.0, 400.0);
-			enemy.Position = new Vector2(1100f, randomY); // 假设屏幕宽 1080
-
+			// 刷在屏幕最右侧的红色地块（29, 8）
+			enemy.Position = new Vector2(29 * Config.CellSize + Config.CellSize / 2, 8 * Config.CellSize - Config.CellSize / 2);
 			// 加到主场景
 			GetParent().AddChild(enemy);
 			

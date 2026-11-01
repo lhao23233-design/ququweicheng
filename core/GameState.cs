@@ -1,4 +1,4 @@
-using CoopDefense.Player;
+using CoopDefense.Data;
 
 namespace CoopDefense.Core
 {

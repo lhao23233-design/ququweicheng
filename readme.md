@@ -58,6 +58,7 @@
 
 - 已有：阶段计时与轮次递增、玩家体力/代币状态、卡牌购买并加入备战席。
 - 已有：备战席材料选择；点击地图可立即扣体力并生成测试方块（尚无读条、单位类型合成或放置规则）。
+- 已有：30×17 网格与关键地标显示；按 R 切换铺路模式，点击网格可铺设测试道路。
 - 开展期会定时刷出向左移动的小怪；小怪会优先攻击附近防守单位，其次攻击卡盒 NPC，漏怪时扣水晶耐久。
 - 防守单位已有索敌和攻击原型，可对敌人造成伤害；但地图放置目前生成的是测试方块，尚未与防守单位部署打通。
 - 尚未实现：机器人、完整经济/升本、物流合作、Boss、结算数据采集与本地存档。目录中标记为空的脚本仍待实现。
@@ -80,7 +81,7 @@
 ### 抽卡、材料与部署
 
 - **抽卡（买材料）**：目标为一页 N 张（基础 3，上限 6），多选，每张单独付费。购买材料进入玩家的**“备战席”**，不直接在地图上生成实物。当前实现为 3 张固定卡、逐张购买。
-- **部署（合成）**：目标为玩家从备战席选择材料，消耗**体力**和**物理时间**（读条）进行合成/部署，成功后在场上生成对应装置或单位。当前点击地图会立即扣体力并生成测试方块，尚无读条和卡牌对应的单位生成。
+- **部署（合成）**：目标为玩家从备战席选择材料，消耗**体力**和**物理时间**（读条）进行合成/部署，成功后在场上生成对应装置或单位。当前点击地图会立即扣体力并生成测试方块，尚无读条和卡牌对应的单位生成；按 R 可切换为测试铺路模式，在网格上点击铺路。
 - **升本**：耗升本经验（代币购买 + 打精英/反拦截掉落），降低卡价、提升抽卡页选项上限。
 - **卡牌保留目标**：未购买的卡页在开展期仍可访问；每轮战斗结束（进入结算）时，当前页未买的卡和备战席未合成的卡都会清空/消失，逼迫玩家在“囤积”与“变现”中做取舍。当前尚未接入阶段切换清理逻辑。
 
@@ -107,63 +108,65 @@
 ```
 /
   .editorconfig
+  .editorconfig
   .gitattributes
   .gitignore
   icon.svg
   icon.svg.import
-  bench_panel.tscn       // 备战席面板测试场景
-  CardNPC.tscn          // 卡盒 NPC 场景
-  Enemy.tscn             // 敌人场景
-  node_2d.tscn           // 主场景（MapView、HUD、GameLoop、卡池、备战席和测试单位）
   project.godot
   ququweicheng-v0.1.0.csproj
   ququweicheng-v0.1.0.sln
   readme.md
+  /scenes
+	node_2d.tscn           // 主场景
+	bench_panel.tscn       // 备战席面板测试场景
+	CardNPC.tscn           // 卡盒 NPC 场景
+	Enemy.tscn             // 敌人场景
   /core
-	Config.cs            // 所有占位常量集中在这里
-	GameLoop.cs          // 休整/开展/结算状态切换与玩家状态
-	GameState.cs         // 运行时数据容器
-	TimeAxis.cs          // [空，待实现] 个人时间轴（资源抽取）
-	EventBus.cs          // [空，待实现] 事件总线（UI/数据解耦）
-  /player
-	PlayerState.cs       // 玩家体力、代币、备战席与选中卡牌
-	StaminaSystem.cs     // 体力回复
-	EconomySystem.cs     // [空，待实现] 代币、升本、中继经验
-	CardSystem.cs        // 卡池刷新、购买扣费并加入备战席
-  /units
-	Unit.cs              // 防守单位：索敌、攻击敌人并承受伤害
-	CooldownSystem.cs    // [空，待实现] 冷却计时
-	card.cs              // 卡牌数据
-	CardNPC.cs           // [修改中]玩家主动交互
-  /logistics
-	Delivery.cs			 // 己方运输单位
-	DeliverySystem.cs    // 相邻传递、运输单位移动[正在修改]
-	InterceptionSystem.cs// [空，待实现] 嘲讽词条、三方配合、双倍悬赏
-	CourierSystem.cs     // [空，待实现] 小人移动与合作手操
-	TopologyGraph.cs     // [空，待实现] 固定 2 人线段拓扑
-  /combat
-	EnemySpawner.cs      // 开展期定时生成小怪
-	EnemyEvolution.cs    // [空，待实现] 全局进化
-	BossSystem.cs        // [空，待实现] 小 Boss
-	CrystalSystem.cs     // [空，待实现] 小水晶耐久、出局判定
-	Enemy.cs             // 移动、攻击目标、受伤死亡与漏怪扣水晶
-  /ai
-	BotController.cs     // [空，待实现] 机器人决策
+	Config.cs              // 所有占位常量集中在这里
+	GameLoop.cs            // 休整/开展/结算状态切换与玩家状态
+	GameState.cs           // 运行时数据容器
+	EventBus.cs            // [空，待实现] 事件总线（UI/数据解耦）
+	TimeAxis.cs            // [空，待实现] 个人时间轴（资源抽取）
   /data
-	MatchRecorder.cs     // [空，待实现] 对局数据采集
-	LocalDatabase.cs     // [空，待实现] JSON 本地存储
+	Card.cs                // 卡牌数据（由 card.cs 改名）
+	PlayerState.cs         // 玩家体力、代币、备战席与选中卡牌
+	MatchRecorder.cs       // [空，待实现] 对局数据采集
+	LocalDatabase.cs       // [空，待实现] JSON 本地存储
+  /entities
+	Unit.cs                // 防守单位：索敌、攻击敌人并承受伤害
+	Enemy.cs               // 移动、攻击目标、受伤死亡与漏怪扣水晶
+	Delivery.cs            // 己方运输单位
+	CardNPC.cs             // 玩家主动交互的卡盒 NPC
+  /systems
+	GridSystem.cs          // 30×17 网格、关键地标与测试道路绘制
+	DeliverySystem.cs      // 相邻传递、运输单位移动[正在修改]
+	CardSystem.cs          // 卡池刷新、购买扣费并加入备战席
+	InterceptionSystem.cs  // [空，待实现] 嘲讽词条、三方配合、双倍悬赏
+	CourierSystem.cs       // [空，待实现] 小人移动与合作手操
+	TopologyGraph.cs       // [空，待实现] 固定 2 人线段拓扑
+	EnemySpawner.cs        // 开展期定时生成小怪
+	EnemyEvolution.cs      // [空，待实现] 全局进化
+	BossSystem.cs          // [空，待实现] 小 Boss
+	CrystalSystem.cs       // [空，待实现] 小水晶耐久、出局判定
+	StaminaSystem.cs       // 体力回复
+	EconomySystem.cs       // [空，待实现] 代币、升本、中继经验
+	CooldownSystem.cs      // [空，待实现] 冷却计时
+  /controls
+	MapView.cs             // 测试铺路模式、地图放置与建塔输入
   /ui
-	HUD.cs               // 显示阶段、倒计时、体力和代币
-	CardPanel.cs         // 卡池购买按钮
-	MapView.cs           // 地图点击放置测试方块并扣体力
-	BenchPanel.cs        // 显示备战席材料并选择待放置卡
-	SettlementPanel.cs   // [空，待实现] 结算数据表单
-	DeliveryPanel.cs	 // 运输相关按钮选项
+	HUD.cs                 // 显示阶段、倒计时、体力和代币
+	CardPanel.cs           // 卡池购买按钮
+	BenchPanel.cs          // 显示备战席材料并选择待放置卡
+	DeliveryPanel.cs       // 运输相关按钮选项
+	SettlementPanel.cs     // [空，待实现] 结算数据表单
+  /ai
+	BotController.cs       // [空，待实现] 机器人决策
   /main
-	Main.cs              // [空，待实现] 入口逻辑（当前由 node_2d.tscn 启动）
+	Main.cs                // [空，待实现] 入口逻辑（当前由 node_2d.tscn 启动）
 ```
 
-共 31 个 C# 脚本，其中 16 个为空文件，已在上方标记“空，待实现”。各脚本旁的 Godot `.uid` 文件及 `.godot/` 生成缓存目录未在树中展开。`Config.cs` 集中占位数值，方便后续调平衡。
+C# 脚本按职责分为核心逻辑、纯数据、实体、系统、输入控制、UI、AI 和入口；Godot 场景统一放在 `scenes/`。各脚本旁的 Godot `.uid` 文件及 `.godot/` 生成缓存目录未在树中展开。`Config.cs` 集中占位数值，方便后续调平衡。
 
 ---
 
@@ -176,7 +179,7 @@
 | 1 | 状态机空转 | 状态切换正确；开发阶段用 3s 测试，最终目标为 60s |
 | 2 | 体力与代币 | 休整/开展回复速率不同，代币按个人时间轴产出 |
 | 3 | 抽卡与备战席 | 当前可验证：逐张购买并加入备战席 |
-| 4 | 物理合成与部署 | 当前仅有即时测试方块放置；待实现读条及对应装置生成 |
+| 4 | 物理合成与部署 | 当前有即时测试方块放置和网格铺路原型；待实现读条及对应装置生成 |
 | 5 | 敌人与防守单位 | 小怪移动、攻击目标和漏怪扣水晶已实现；防守单位仍未接入部署流程 |
 | 6 | 传递与拦截 | 合作触发嘲讽怪、三方配合有收益、不合作小人安全 |
 | 7 | 小 Boss | 逃出扣耐久、击杀给赏金 + 升本经验 |

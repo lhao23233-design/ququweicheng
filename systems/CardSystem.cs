@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Godot;
 using CoopDefense.Core;
-using CoopDefense.Units; // 如果你建了 Card 类，确保它在这个命名空间下
+using CoopDefense.Data;
 
 namespace CoopDefense.Player
 {

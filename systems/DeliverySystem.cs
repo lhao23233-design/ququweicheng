@@ -1,6 +1,6 @@
 using Godot;
 using CoopDefense.Core;
-using CoopDefense.Units;
+using CoopDefense.Entities;
 
 namespace CoopDefense.Logistics
 {
@@ -36,6 +36,7 @@ namespace CoopDefense.Logistics
 		public void SpawnDelivery()
 		{
 			var npc = new Delivery();
+			
 			// 视觉表现
 			var visual = new ColorRect 
 			{ 
@@ -45,9 +46,10 @@ namespace CoopDefense.Logistics
 			visual.Position = new Vector2(-visual.Size.X / 2, -visual.Size.Y / 2); 
 			npc.AddChild(visual);
 			
-			// 位置
-			float randomX = (float)GD.RandRange(Config.NpcSpawnXMin, Config.NpcSpawnXMax);
-			npc.Position = new Vector2(randomX, Config.NpcSpawnY);
+			// 关键修改：精准出生在 (15, 0) 的黄色入口格子中心
+			// 15 * 64 + 32 = 992
+			// 0 * 64 + 32 = 32
+			npc.Position = new Vector2(992f, 32f);
 			
 			// 加到主场景
 			GetTree().CurrentScene.AddChild(npc);

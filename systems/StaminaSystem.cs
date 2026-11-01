@@ -1,5 +1,6 @@
 using Godot;
 using CoopDefense.Core;
+using CoopDefense.Data;
 
 namespace CoopDefense.Player
 {

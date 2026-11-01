@@ -1,21 +1,46 @@
 using Godot;
 using CoopDefense.Core;
 using CoopDefense.Units;
-
+using CoopDefense.Logistics;
 public partial class MapView : Node2D
 {
 	private GameLoop _gameLoop;
+	private GridSystem _gridSystem;
+	private bool _isRoadBuildMode = false;
 
 	public override void _Ready()
 	{
 		_gameLoop = GetTree().Root.FindChild("GameLoop", true, false) as GameLoop;
+		_gridSystem = GetTree().CurrentScene.FindChild("GridSystem", true, false) as GridSystem;
+		if (_gridSystem == null)
+			GD.Print("错误：MapView 找不到 GridSystem！");
+		else
+			GD.Print("成功找到 GridSystem！");
+	}
+	public override void _Input(InputEvent @event)
+	{
+		// 按键盘 R 键，切换铺路模式
+		if (@event is InputEventKey keyEvent && keyEvent.Pressed && keyEvent.Keycode == Key.R)
+		{
+			_isRoadBuildMode = !_isRoadBuildMode;
+			GD.Print($"铺路模式: {(_isRoadBuildMode ? "开启" : "关闭")}");
+		}
 	}
 	public override void _UnhandledInput(InputEvent @event)
 	{
 		if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
 		{
+			Vector2 mousePos = GetGlobalMousePosition();
+			Vector2I gridPos = _gridSystem.WorldToGrid(mousePos);
+			GD.Print($"尝试在网格 {gridPos} 铺路");
+			// 如果开启了铺路模式，就执行铺路
+			if (_isRoadBuildMode)
+			{
+				_gridSystem.BuildRoad(gridPos);
+				return; // 铺完路直接返回，不执行建塔逻辑
+			}
 			var player = _gameLoop.State.Player1;
-			
+			// 否则，执行原本的“建炮塔”逻辑
 			// 判断是否在备战席选中了卡牌
 			if (player.SelectedCardIndex >= 0)
 			{
