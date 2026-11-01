@@ -31,8 +31,6 @@ namespace CoopDefense.Logistics
 				return false;
 			}
 		}
-
-		// 你原来的生成逻辑
 		public void SpawnDelivery()
 		{
 			var npc = new Delivery();
@@ -41,19 +39,19 @@ namespace CoopDefense.Logistics
 			var visual = new ColorRect 
 			{ 
 				Color = Colors.Yellow, 
-				Size = new Vector2(Config.NpcCollisionSize, Config.NpcCollisionSize) 
+				// 大小强制用 64，严丝合缝填满网格
+				Size = new Vector2(64, 64)
+				
 			};
-			visual.Position = new Vector2(-visual.Size.X / 2, -visual.Size.Y / 2); 
+			// 强制居中
+			visual.Position = new Vector2(-32, -32); 
 			npc.AddChild(visual);
 			
-			// 关键修改：精准出生在 (15, 0) 的黄色入口格子中心
-			// 15 * 64 + 32 = 992
-			// 0 * 64 + 32 = 32
-			npc.Position = new Vector2(992f, 32f);
-			
-			// 加到主场景
+			// 使用 GridSystem 的转换方法，确保逻辑绝对统一
+			var gridSystem = GetTree().Root.FindChild("GridSystem", true, false) as GridSystem;
 			GetTree().CurrentScene.AddChild(npc);
-			GD.Print("DeliverySystem：一辆运钞车已发出。");
+			npc.GlobalPosition = gridSystem.GridToWorld(new Vector2I(15, 0));
+			GD.Print($"DeliverySystem：生成于 {npc.GlobalPosition}");
 		}
 	}
 }

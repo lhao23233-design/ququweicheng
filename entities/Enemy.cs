@@ -19,6 +19,20 @@ namespace CoopDefense.Combat
 		{
 			AddToGroup("Enemies");
 			AddCollisionShape();
+			// --- 新增视觉块代码开始 ---
+			var visual = new ColorRect
+			{
+				Color = Colors.Red,
+				Size = new Vector2(Config.EnemyCollisionSize, Config.EnemyCollisionSize)
+			};
+			// 关键偏移：让视觉块的正中心，对齐物理碰撞箱的正中心
+			visual.Position = new Vector2(-Config.EnemyCollisionSize / 2, -Config.EnemyCollisionSize / 2);
+			AddChild(visual);
+			// --- 新增视觉块代码结束 ---
+
+			// Layer 1 (值就是 1)：代表我是“敌人”层
+            this.CollisionLayer = 1<<0; 
+			this.CollisionMask = 1<<1 | 1<<2; // 代表我可以与“防御单位”和“运输单位”发生碰撞
 
 			_gameLoop = GetTree().Root.FindChild("GameLoop", true, false) as GameLoop;
 			if (_gameLoop == null)
@@ -60,9 +74,8 @@ namespace CoopDefense.Combat
 				Shape = new RectangleShape2D
 				{
 					Size = new Vector2(Config.EnemyCollisionSize, Config.EnemyCollisionSize)
-				}
+				} 
 			};
-
 			AddChild(collision);
 		}
 
@@ -126,15 +139,16 @@ namespace CoopDefense.Combat
 
 		private bool TryAttackDelivery()
 		{
-			foreach (Node node in GetTree().GetNodesInGroup("Delivery"))
+			// 把 "Delivery" 改成 "Deliveries"
+			foreach (Node node in GetTree().GetNodesInGroup("Deliveries"))
 			{
 				if (node is Delivery delivery && IsWithinAttackRange(delivery))
 				{
+					GD.Print("怪物正在攻击运钞车！"); // 加个打印方便排查
 					delivery.TakeDamage(_damage);
 					return true;
 				}
 			}
-
 			return false;
 		}
 

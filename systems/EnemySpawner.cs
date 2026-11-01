@@ -30,20 +30,9 @@ namespace CoopDefense.Combat
 
 		private void SpawnEnemy()
 		{
-			// 动态用代码生成一个 Enemy 节点
 			var enemy = new Enemy();
-			
-			// 给个视觉表现（红方块）
-			var visual = new ColorRect { Color = Colors.Red, Size = new Vector2(64, 64) };
-			visual.Position = new Vector2(visual.Size.X/2, visual.Size.Y/2); // 居中
-			enemy.AddChild(visual);
-
-			// 刷在屏幕最右侧的红色地块（29, 8）
-			enemy.Position = new Vector2(29 * Config.CellSize + Config.CellSize / 2, 8 * Config.CellSize - Config.CellSize / 2);
-			// 加到主场景
-			GetParent().AddChild(enemy);
-			
-			GD.Print("刷出一只怪！");
+			enemy.Position = new Vector2(1888, 544); // 或者你固定的网格坐标
+			GetTree().CurrentScene.AddChild(enemy);
 		}
 	}
 }

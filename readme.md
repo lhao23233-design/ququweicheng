@@ -134,6 +134,7 @@
 	MatchRecorder.cs       // [空，待实现] 对局数据采集
 	LocalDatabase.cs       // [空，待实现] JSON 本地存储
   /entities
+	SmoothMovement.cs	   // 物理
 	Unit.cs                // 防守单位：索敌、攻击敌人并承受伤害
 	Enemy.cs               // 移动、攻击目标、受伤死亡与漏怪扣水晶
 	Delivery.cs            // 己方运输单位

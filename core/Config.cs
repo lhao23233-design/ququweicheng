@@ -42,7 +42,7 @@ public static class Config {
 	public const float EnemyMoveSpeed = 80f;
 	public const float EnemyAttackDamage = 10f;
 	public const float EnemyAttackInterval = 1f;
-	public const float EnemyAttackRange = 30f;
+	public const float EnemyAttackRange = 100f;
 	public const float EnemyIdleAttackRetryInterval = 0.1f;
 	public const float EnemyDefenseDamageMultiplier = 5f;
 	public const float EnemyLeakBoundaryX = -50f;
@@ -53,9 +53,10 @@ public static class Config {
 	public const float NpcSpawnXMin = 300f;      // 出生点 X 坐标下限
 	public const float NpcSpawnXMax = 400f;      // 出生点 X 坐标上限
 	public const float NpcSpawnY = 0f;        // 出生点 Y 坐标
-	public const float NpcCollisionSize = 64f;   // 碰撞框大小
+	public const float NpcCollisionSize = 60f;   // 碰撞框大小
 	public const float NpcEndY = 900f;	//终点y坐标
-
+    public const float Health = 30f; 
+    public const float MoveSpeed = 100f;
 	// 资源抽取
 	public const float ResourceTickInterval = 10f;
 

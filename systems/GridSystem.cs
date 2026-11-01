@@ -8,7 +8,8 @@ namespace CoopDefense.Logistics
 		public const int CellSize = 64;
 		public const int GridWidth = 30;
 		public const int GridHeight = 17;
-		
+		// 记录每一格的移动耗时（秒）
+		public Dictionary<Vector2I, float> CellCosts { get; private set; } = new Dictionary<Vector2I, float>();
 		// 记录所有地块的视觉节点
 		private Dictionary<Vector2I, ColorRect> _cells = new Dictionary<Vector2I, ColorRect>();
 		public HashSet<Vector2I> RoadCells { get; private set; } = new HashSet<Vector2I>();
@@ -23,10 +24,12 @@ namespace CoopDefense.Logistics
 					var cell = new ColorRect
 					{
 						Color = new Color(0.15f, 0.15f, 0.15f), // 深灰色
-						Size = new Vector2(CellSize - 2, CellSize - 2), // 留出缝隙当网格线
-						Position = new Vector2(x * CellSize, y * CellSize),
-						MouseFilter = Control.MouseFilterEnum.Ignore // 关键：不让网格挡住鼠标点击！
+						Size = new Vector2(CellSize-2, CellSize-2), // 强制 64
+						Position = new Vector2(x * CellSize + 1, y * CellSize + 1),
+						MouseFilter = Control.MouseFilterEnum.Ignore // 不让网格挡住鼠标点击！
 					};
+					// ------------------------------------------------
+
 					AddChild(cell);
 					_cells[new Vector2I(x, y)] = cell; // 记录这个地块
 				}
@@ -41,11 +44,12 @@ namespace CoopDefense.Logistics
 			GD.Print("网格生成完毕！地标绘制完毕！");
 		}
 
-		// 传入像素坐标，返回对应的网格坐标
-		public Vector2I WorldToGrid(Vector2 worldPosition)
+		// World positions are converted to grid-local coordinates before resolving the cell.
+		public Vector2I WorldToGrid(Vector2 globalPosition)
 		{
-			int gridX = Mathf.FloorToInt(worldPosition.X / CellSize);
-			int gridY = Mathf.FloorToInt(worldPosition.Y / CellSize);
+			Vector2 localPosition = ToLocal(globalPosition);
+			int gridX = Mathf.FloorToInt(localPosition.X / CellSize);
+			int gridY = Mathf.FloorToInt(localPosition.Y / CellSize);
 			return new Vector2I(gridX, gridY);
 		}
 
@@ -62,6 +66,7 @@ namespace CoopDefense.Logistics
 			{
 				_cells[gridPos].Color = new Color(0.8f, 0.8f, 0.8f); // 变成浅灰色代表路
 				RoadCells.Add(gridPos);
+				CellCosts[gridPos] = CellSize / Config.MoveSpeed;
 				GD.Print($"在 {gridPos} 铺了路。");
 			}
 		}
@@ -72,6 +77,13 @@ namespace CoopDefense.Logistics
 			{
 				_cells[gridPos].Color = color;
 			}
+		}
+		public Vector2 GridToWorld(Vector2I gridPos)
+		{
+			Vector2 localCenter = new Vector2(
+				gridPos.X * CellSize + CellSize / 2f,
+				gridPos.Y * CellSize + CellSize / 2f);
+			return ToGlobal(localCenter);
 		}
 	}
 }
