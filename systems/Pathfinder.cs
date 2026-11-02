@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using CoopDefense.Core;
 
 namespace CoopDefense.Systems
 {
@@ -27,6 +28,12 @@ namespace CoopDefense.Systems
             Dictionary<Vector2I, float> cellCosts) // 新增：格子耗时字典
         {
             var path = new List<Vector2I>();
+            if (!IsInBounds(start) || !IsInBounds(end) ||
+                blockedCells.Contains(start) || blockedCells.Contains(end))
+            {
+                return path;
+            }
+
             var openList = new PriorityQueue<Node, float>(); // 优先队列：耗时越少的越先出队
             var costSoFar = new Dictionary<Vector2I, float>(); // 记录到每个格子已知的最短耗时
             var cameFrom = new Dictionary<Vector2I, Vector2I>(); // 记录路径前驱
@@ -39,6 +46,10 @@ namespace CoopDefense.Systems
             while (openList.Count > 0)
             {
                 var current = openList.Dequeue();
+                if (current.TimeCost > costSoFar[current.Position])
+                {
+                    continue;
+                }
 
                 if (current.Position == end)
                 {
@@ -57,18 +68,13 @@ namespace CoopDefense.Systems
                 {
                     Vector2I next = current.Position + dir;
 
-                    // 如果被挡住，直接跳过
-                    if (blockedCells.Contains(next)) continue;
+                    if (!IsInBounds(next) || blockedCells.Contains(next)) continue;
 
-                    // 获取走到这个格子的时间成本（如果没有路，或者字典里没配，给个默认高耗时）
-                    float stepCost = 10f; 
-                    if (roadCells.Contains(next) && cellCosts.ContainsKey(next))
+                    float offRoadSpeed = Config.MoveSpeed * Config.NpcOffRoadSpeedMultiplier;
+                    float stepCost = Config.CellSize / offRoadSpeed;
+                    if (roadCells.Contains(next) && cellCosts.TryGetValue(next, out float roadCost) && roadCost > 0)
                     {
-                        stepCost = cellCosts[next]; // 玩家铺的路，取具体耗时
-                    }
-                    else if (!roadCells.Contains(next))
-                    {
-                        stepCost = 99f; // 没路的地方，极其耗时，逼它尽量走铺好的路
+                        stepCost = roadCost;
                     }
 
                     float newCost = current.TimeCost + stepCost;
@@ -84,6 +90,12 @@ namespace CoopDefense.Systems
             }
 
             return path; // 走不通返回空
+        }
+
+        private static bool IsInBounds(Vector2I position)
+        {
+            return position.X >= 0 && position.X < Config.GridWidth &&
+                   position.Y >= 0 && position.Y < Config.GridHeight;
         }
     }
 }

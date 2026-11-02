@@ -5,9 +5,9 @@ namespace CoopDefense.Logistics
 {
 	public partial class GridSystem : Node2D
 	{
-		public const int CellSize = 64;
-		public const int GridWidth = 30;
-		public const int GridHeight = 17;
+		public const int CellSize = Config.CellSize;
+		public const int GridWidth = Config.GridWidth;
+		public const int GridHeight = Config.GridHeight;
 		// 记录每一格的移动耗时（秒）
 		public Dictionary<Vector2I, float> CellCosts { get; private set; } = new Dictionary<Vector2I, float>();
 		// 记录所有地块的视觉节点

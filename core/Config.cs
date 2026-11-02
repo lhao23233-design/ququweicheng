@@ -50,13 +50,11 @@ public static class Config {
 
 	// 运输NPC
 	public const int NpcCallCost = 10;           // 呼叫花费
-	public const float NpcSpawnXMin = 300f;      // 出生点 X 坐标下限
-	public const float NpcSpawnXMax = 400f;      // 出生点 X 坐标上限
-	public const float NpcSpawnY = 0f;        // 出生点 Y 坐标
 	public const float NpcCollisionSize = 60f;   // 碰撞框大小
-	public const float NpcEndY = 900f;	//终点y坐标
     public const float Health = 30f; 
     public const float MoveSpeed = 100f;
+	public const float NpcOffRoadSpeedMultiplier = 0.3f;
+	public const float NpcAcceleration = 400f;
 	// 资源抽取
 	public const float ResourceTickInterval = 10f;
 

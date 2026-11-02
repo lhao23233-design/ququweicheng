@@ -10,11 +10,9 @@ namespace CoopDefense.Entities
         private GameLoop _gameLoop;
         private GridSystem _gridSystem;
         private float Health = Config.Health;
-        private float MoveSpeed = Config.MoveSpeed;
         private List<Vector2I> _currentPath;
         private int _pathIndex = 0;
         private Vector2I _lastGridPos = new Vector2I(-1, -1);//记录上一次
-        private bool _isWaitingForRoad = false;//标记是否在等待道路生成
         private float _spawnFreezeTimer = 0.5f; // 出生后先冻结半秒
         private static readonly Vector2I DestinationGrid = new(15, GridSystem.GridHeight - 1);
 
@@ -46,9 +44,10 @@ namespace CoopDefense.Entities
             Vector2I currentGrid = _gridSystem.WorldToGrid(GlobalPosition);
             Vector2 currentCellCenter = _gridSystem.GridToWorld(currentGrid);
             bool isCenteredOnCurrentCell = GlobalPosition.DistanceTo(currentCellCenter) <= 1f;
-            float step = MoveSpeed * (float)delta;
+            float currentSpeed = Velocity.Length();
 
-            if (currentGrid == DestinationGrid && GlobalPosition.DistanceTo(currentCellCenter) <= step + 1f)
+            if (currentGrid == DestinationGrid &&
+                GlobalPosition.DistanceTo(currentCellCenter) <= currentSpeed * (float)delta + 1f)
             {
                 GlobalPosition = currentCellCenter;
                 ReachDestination();
@@ -76,47 +75,41 @@ namespace CoopDefense.Entities
             // 3. 如果算出来没路（说明玩家乱铺或者还没铺），就减速往死里走
             if (_currentPath == null || _currentPath.Count == 0)
             {
-                // 如果脚下就是黄色起点，且没路，就死死停在原地！
-                if (currentGrid == new Vector2I(15, 0) && isCenteredOnCurrentCell)
-                {
-                    Velocity = Vector2.Zero;
-                    GlobalPosition = currentCellCenter;
-                }
-                else
-                {
-                    // 如果已经开出来了，路突然断了，才允许往下掉
-                    Velocity = new Vector2(0, MoveSpeed * 0.3f); 
-                }
-                
+                Vector2 fallbackTarget = GlobalPosition + Vector2.Down;
+                Velocity = SmoothMovement.GetVelocity(
+                    GlobalPosition,
+                    fallbackTarget,
+                    Config.MoveSpeed * Config.NpcOffRoadSpeedMultiplier,
+                    Config.NpcAcceleration,
+                    currentSpeed,
+                    (float)delta);
                 MoveAndSlide();
                 return;
             }
 
-            Vector2 targetPos = _gridSystem.GridToWorld(_currentPath[_pathIndex]);
+            Vector2I targetGrid = _currentPath[_pathIndex];
+            Vector2 targetPos = _gridSystem.GridToWorld(targetGrid);
+            float targetSpeed = _gridSystem.RoadCells.Contains(targetGrid)
+                ? Config.MoveSpeed
+                : Config.MoveSpeed * Config.NpcOffRoadSpeedMultiplier;
 
             // 计算当前到目标中心的距离
             float distToTarget = GlobalPosition.DistanceTo(targetPos);
+            Velocity = SmoothMovement.GetVelocity(
+                GlobalPosition,
+                targetPos,
+                targetSpeed,
+                Config.NpcAcceleration,
+                currentSpeed,
+                (float)delta);
 
             // 核心修复：如果下一帧的步长会跨越目标点，就直接吸附到中心！
-            if (distToTarget <= step + 1f) 
+            if (distToTarget <= Velocity.Length() * (float)delta + 1f)
             {
                 GlobalPosition = targetPos; // 强行精准吸附到网格正中心
-                Velocity = Vector2.Zero; // 强制速度清零，防止惯性滑步
                 _pathIndex++;
                 return; // 这一帧不进行物理移动，下一帧朝新目标走
             }
-
-            // 如果还没到吸附距离，就正常走
-            Vector2 dir = targetPos - GlobalPosition;
-            if (Mathf.Abs(dir.X) > Mathf.Abs(dir.Y))
-            {
-                Velocity = new Vector2(Mathf.Sign(dir.X) * MoveSpeed, 0);
-            }
-            else
-            {
-                Velocity = new Vector2(0, Mathf.Sign(dir.Y) * MoveSpeed);
-            }
-            
             MoveAndSlide();
         }
 
