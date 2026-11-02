@@ -13,6 +13,7 @@ namespace CoopDefense.Logistics
 		// 记录所有地块的视觉节点
 		private Dictionary<Vector2I, ColorRect> _cells = new Dictionary<Vector2I, ColorRect>();
 		public HashSet<Vector2I> RoadCells { get; private set; } = new HashSet<Vector2I>();
+		public HashSet<Vector2I> ObstacleCells { get; private set; } = new HashSet<Vector2I>();
 
 		public override void _Ready()
 		{
@@ -24,8 +25,8 @@ namespace CoopDefense.Logistics
 					var cell = new ColorRect
 					{
 						Color = new Color(0.15f, 0.15f, 0.15f), // 深灰色
-						Size = new Vector2(CellSize-2, CellSize-2), // 强制 64
-						Position = new Vector2(x * CellSize + 1, y * CellSize + 1),
+						Size = new Vector2(CellSize-2, CellSize-2), // 留2像素当网格
+						Position = new Vector2(x * CellSize + 1, y * CellSize + 1),//略大一圈好作判定
 						MouseFilter = Control.MouseFilterEnum.Ignore // 不让网格挡住鼠标点击！
 					};
 					// ------------------------------------------------
@@ -36,10 +37,22 @@ namespace CoopDefense.Logistics
 			}
 
 			// 2. 涂抹关键位置（注意要放在循环外面，只执行一次）
-			PaintCell(new Vector2I(3, 14), Colors.Blue);   // 小水晶 (左下角)
-			PaintCell(new Vector2I(29, 8), Colors.Red);    // 怪物出怪口 (右侧中间)
-			PaintCell(new Vector2I(15, 0), Colors.Yellow); // 运钞车入口 (正上方)
-			PaintCell(new Vector2I(15, 16), Colors.Green); // 传输口 (正下方)
+			PaintCell(Config.CrystalPos,Colors.Blue);   // 小水晶 (左下角)
+			PaintCell(Config.EnemySpawnPos, Colors.Red);    // 怪物出怪口 (右侧中间)
+			PaintCell(Config.DeliveryEntryPos, Colors.Yellow); // 运钞车入口 (正上方)
+			PaintCell(Config.DeliveryExitPos, Colors.Green); // 传输口 (正下方)
+			//3. 生成障碍物
+			ObstacleCells = Map.MapGenerator.GenerateObstacleCells();
+			foreach (var obstacle in ObstacleCells)
+			{
+				//不能占用关键位置
+				if (Config.KeyPositions.Contains(obstacle))
+				{
+					GD.PrintErr($"障碍物 {obstacle} 占用了关键位置，已忽略！");
+					continue;
+				}
+				PaintCell(obstacle, Colors.Black);
+			}
 
 			GD.Print("网格生成完毕！地标绘制完毕！");
 		}
@@ -62,12 +75,22 @@ namespace CoopDefense.Logistics
 
 		public void BuildRoad(Vector2I gridPos)
 		{
-			if (_cells.ContainsKey(gridPos) && !RoadCells.Contains(gridPos))
+			if (_cells.ContainsKey(gridPos) && !RoadCells.Contains(gridPos)&& !ObstacleCells.Contains(gridPos))
 			{
 				_cells[gridPos].Color = new Color(0.8f, 0.8f, 0.8f); // 变成浅灰色代表路
 				RoadCells.Add(gridPos);
 				CellCosts[gridPos] = CellSize / Config.MoveSpeed;
 				GD.Print($"在 {gridPos} 铺了路。");
+			}
+		}
+		public void DeleteRoad(Vector2I gridPos)
+		{
+			if (RoadCells.Contains(gridPos))
+			{
+				_cells[gridPos].Color = new Color(0.15f, 0.15f, 0.15f); // 变回深灰色
+				RoadCells.Remove(gridPos);
+				CellCosts.Remove(gridPos);
+				GD.Print($"在 {gridPos} 拆除了路。");
 			}
 		}
 

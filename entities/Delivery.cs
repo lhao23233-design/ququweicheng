@@ -60,8 +60,7 @@ namespace CoopDefense.Entities
                 (currentGrid != _lastGridPos && isCenteredOnCurrentCell))
             {
                 _lastGridPos = currentGrid; // 更新足迹
-                var blocked = new HashSet<Vector2I>(); 
-                
+                var blocked = _gridSystem.ObstacleCells;  
                 _currentPath = Systems.Pathfinder.FindFastestPath(
                     currentGrid, 
                     DestinationGrid, 

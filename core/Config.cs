@@ -1,3 +1,5 @@
+using Godot;
+using System.Collections.Generic;
 public static class Config {
 	// 时间
 	public const float RestPhaseDuration = 3f;
@@ -63,4 +65,14 @@ public static class Config {
     // 地图网格的宽高（比如 30x17 个格子）
     public const int GridWidth = 30;
     public const int GridHeight = 17;
+	public static int MapId=1;
+	//关键位置
+	public static Vector2I CrystalPos=new Vector2I(3, 14);
+	public static Vector2I EnemySpawnPos=new Vector2I(29, 8);
+	public static Vector2I DeliveryEntryPos=new Vector2I(15, 0);
+	public static Vector2I DeliveryExitPos=new Vector2I(15, 16);
+	public static readonly HashSet<Vector2I> KeyPositions = new HashSet<Vector2I>
+	{
+    CrystalPos, EnemySpawnPos, DeliveryEntryPos, DeliveryExitPos
+	};
 }

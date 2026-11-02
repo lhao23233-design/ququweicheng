@@ -156,6 +156,7 @@
 	StaminaSystem.cs       // 体力回复
 	EconomySystem.cs       // [空，待实现] 代币、升本、中继经验
 	CooldownSystem.cs      // [空，待实现] 冷却计时
+	Mapsystem.cs		   // [空，待实现] 随机地图抽取
   /controls
 	MapView.cs             // 测试铺路模式、地图放置与建塔输入
   /ui
@@ -255,7 +256,7 @@ public static class Config {
 	// 小怪
 	public const float EnemyMaxHealth = 50f;
 	public const float EnemyMoveSpeed = 80f;
-	public const float EnemyAttackDamage = 10f;
+	public const float EnemyAttackDamage = 100f;
 	public const float EnemyAttackInterval = 1f;
 	public const float EnemyAttackRange = 60f;
 	public const float EnemyIdleAttackRetryInterval = 0.1f;

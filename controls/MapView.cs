@@ -28,7 +28,7 @@ public partial class MapView : Node2D
 	}
 	public override void _UnhandledInput(InputEvent @event)
 	{
-		if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
+		if (@event is InputEventMouseButton LeftmouseEvent && LeftmouseEvent.Pressed && LeftmouseEvent.ButtonIndex == MouseButton.Left)
 		{
 			Vector2 mousePos = GetGlobalMousePosition();
 			Vector2I gridPos = _gridSystem.WorldToGrid(mousePos);
@@ -36,7 +36,15 @@ public partial class MapView : Node2D
 			// 如果开启了铺路模式，就执行铺路
 			if (_isRoadBuildMode)
 			{
-				_gridSystem.BuildRoad(gridPos);
+				if(!_gridSystem.RoadCells.Contains(gridPos) && !_gridSystem.ObstacleCells.Contains(gridPos)&&!Config.KeyPositions.Contains(gridPos))
+				{
+					_gridSystem.BuildRoad(gridPos);
+					GD.Print($"铺路成功！网格 {gridPos} 已变为道路。");
+				}
+				else
+				{
+					GD.Print($"铺路失败！网格 {gridPos} 已经是道路或障碍物。");
+				}
 				return; // 铺完路直接返回，不执行建塔逻辑
 			}
 			var player = _gameLoop.State.Player1;
@@ -61,6 +69,17 @@ public partial class MapView : Node2D
 				{
 					GD.Print("体力不足，无法合成！");
 				}
+			}
+		}
+		else if (@event is InputEventMouseButton rightMouseEvent && rightMouseEvent.Pressed && rightMouseEvent.ButtonIndex == MouseButton.Right)
+		{
+			Vector2 mousePos = GetGlobalMousePosition();
+			Vector2I gridPos = _gridSystem.WorldToGrid(mousePos);
+			GD.Print($"右键点击网格 {gridPos}");
+			if (_isRoadBuildMode)
+			{
+			_gridSystem.DeleteRoad(gridPos);
+			return; // 拆完路直接返回，不执行其他逻辑
 			}
 		}
 	}
