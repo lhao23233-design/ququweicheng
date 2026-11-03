@@ -85,12 +85,37 @@ public partial class MapView : Node2D
 	}
 	private void SpawnTower(Vector2 pos)
 	{
-		// 用代码直接生成一个白方块测试
+		// 1. 必须先计算坐标，后面才能用！
+		Vector2I gridPos = _gridSystem.WorldToGrid(pos);
+		Vector2 centerPos = _gridSystem.GridToWorld(gridPos);
+
+		// 2. 防呆 1：不能建在墙上
+		if (_gridSystem.ObstacleCells.Contains(gridPos))
+		{
+			GD.Print("这里不能建塔，这是墙！");
+			return; 
+		}
+
+		// 3. 防呆 2：不能重叠建塔
+		var existingTowers = GetTree().GetNodesInGroup("DefenseUnits");
+		foreach (var node in existingTowers)
+		{
+			// 因为有了上一步的中心点计算，这里可以直接判断
+			if (node is Node2D existingTower && existingTower.Position == centerPos)
+			{
+				GD.Print("这里已经有塔了！");
+				return;
+			}
+		}
+
+		// 4. 生成并挂载视觉
 		var tower = new CoopDefense.Units.Unit();
-		var visual = new ColorRect { Color = Colors.White, Size = new Vector2(40, 40) };
-		visual.Position = new Vector2(-visual.Size.X / 2, -visual.Size.Y / 2);//先把方块的中心点对齐到塔的中心点
+		var visual = new ColorRect { Color = Colors.White, Size = new Vector2(64, 64) };
+		visual.Position = new Vector2(-visual.Size.X / 2, -visual.Size.Y / 2);
 		tower.AddChild(visual);
-		tower.Position = pos;
+
+		// 5. 设置塔的位置并加入场景
+		tower.Position = centerPos;
 		AddChild(tower);
 	}
 }

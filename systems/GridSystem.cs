@@ -37,12 +37,12 @@ namespace CoopDefense.Logistics
 			}
 
 			// 2. 涂抹关键位置（注意要放在循环外面，只执行一次）
+			ObstacleCells = Map.MapGenerator.GenerateObstacleCells();
 			PaintCell(Config.CrystalPos,Colors.Blue);   // 小水晶 (左下角)
 			PaintCell(Config.EnemySpawnPos, Colors.Red);    // 怪物出怪口 (右侧中间)
 			PaintCell(Config.DeliveryEntryPos, Colors.Yellow); // 运钞车入口 (正上方)
 			PaintCell(Config.DeliveryExitPos, Colors.Green); // 传输口 (正下方)
 			//3. 生成障碍物
-			ObstacleCells = Map.MapGenerator.GenerateObstacleCells();
 			foreach (var obstacle in ObstacleCells)
 			{
 				//不能占用关键位置

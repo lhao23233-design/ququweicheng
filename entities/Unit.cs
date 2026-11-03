@@ -22,7 +22,7 @@ namespace CoopDefense.Units
             this.CollisionMask = 1 << 0; // 代表我可以与“敌人”发生碰撞
             // 2. 动态加一个碰撞框，这样怪撞上来才会停下
             var collision = new CollisionShape2D();
-            collision.Shape = new RectangleShape2D { Size = new Vector2(40, 40) };
+            collision.Shape = new RectangleShape2D { Size = new Vector2(64, 64) };
             AddChild(collision);
         }
 

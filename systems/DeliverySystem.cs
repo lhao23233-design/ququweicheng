@@ -50,7 +50,7 @@ namespace CoopDefense.Logistics
 			// 使用 GridSystem 的转换方法，确保逻辑绝对统一
 			var gridSystem = GetTree().Root.FindChild("GridSystem", true, false) as GridSystem;
 			GetTree().CurrentScene.AddChild(npc);
-			npc.GlobalPosition = gridSystem.GridToWorld(new Vector2I(15, 0));
+			npc.GlobalPosition = gridSystem.GridToWorld(Config.DeliveryEntryPos);
 			GD.Print($"DeliverySystem：生成于 {npc.GlobalPosition}");
 		}
 	}

@@ -7,7 +7,7 @@ namespace CoopDefense.Combat
 	{
 		private GameLoop _gameLoop;
 		private float _spawnTimer = 0f;
-		private float _spawnInterval = 1.5f; // 每 1.5 秒刷一只怪
+		private float _spawnInterval = 0.1f; // 每 0.1 秒刷一只怪
 
 		public override void _Ready()
 		{
@@ -31,7 +31,7 @@ namespace CoopDefense.Combat
 		private void SpawnEnemy()
 		{
 			var enemy = new Enemy();
-			enemy.Position = new Vector2(1888, 544); // 或者你固定的网格坐标
+			enemy.Position = new Vector2(64*Config.EnemySpawnPos.X,64*Config.EnemySpawnPos.Y+32); // 或者你固定的网格坐标
 			GetTree().CurrentScene.AddChild(enemy);
 		}
 	}

@@ -1,7 +1,10 @@
 using Godot;
+using System.Collections.Generic;
 using CoopDefense.Core;
 using CoopDefense.Units;
 using CoopDefense.Entities;
+using CoopDefense.Logistics;
+using CoopDefense.Systems;
 
 namespace CoopDefense.Combat
 {
@@ -14,6 +17,11 @@ namespace CoopDefense.Combat
 		private readonly float _attackInterval = Config.EnemyAttackInterval;
 		private readonly float _damage = Config.EnemyAttackDamage;
 		private GameLoop _gameLoop;
+		private GridSystem _gridSystem;
+		private List<Vector2I> _currentPath;
+		private int _pathIndex;
+		private Vector2I _lastGridPos = new Vector2I(-1, -1);
+		private static readonly Vector2I DestinationGrid = Config.CrystalPos;
 
 		public override void _Ready()
 		{
@@ -39,12 +47,17 @@ namespace CoopDefense.Combat
 			{
 				GD.PushError($"{nameof(Enemy)} requires a GameLoop node to apply crystal damage.");
 			}
+			_gridSystem = GetTree().Root.FindChild("GridSystem", true, false) as GridSystem;
+			if (_gridSystem == null)
+			{
+				GD.PushError($"{nameof(Enemy)} requires a GridSystem node for pathfinding.");
+			}
 			GD.Print($"我出生在: {Position}");
 		}
 
 		public override void _PhysicsProcess(double delta)
 		{
-			MoveTowardCrystal();
+			MoveTowardCrystal((float)delta);
 			if (HandleLeak())
 			{
 				return;
@@ -79,15 +92,90 @@ namespace CoopDefense.Combat
 			AddChild(collision);
 		}
 
-		private void MoveTowardCrystal()
+		private void MoveTowardCrystal(float delta)
 		{
-			Velocity = Vector2.Left * MoveSpeed;
+			if (_gridSystem == null)
+			{
+				Velocity = Vector2.Zero;
+				return;
+			}
+
+			Vector2I currentGrid = _gridSystem.WorldToGrid(GlobalPosition);
+			Vector2 currentCellCenter = _gridSystem.GridToWorld(currentGrid);
+			bool isCenteredOnCurrentCell = GlobalPosition.DistanceTo(currentCellCenter) <= 1f;
+			float currentSpeed = Velocity.Length();
+
+			if (currentGrid == DestinationGrid)
+			{
+				float distanceToCenter = GlobalPosition.DistanceTo(currentCellCenter);
+				if (distanceToCenter <= currentSpeed * delta + 1f)
+				{
+					GlobalPosition = currentCellCenter;
+					Velocity = Vector2.Zero;
+					return;
+				}
+
+				Velocity = SmoothMovement.GetVelocity(
+					GlobalPosition,
+					currentCellCenter,
+					MoveSpeed,
+					Config.NpcAcceleration,
+					currentSpeed,
+					delta);
+				MoveAndSlide();
+				return;
+			}
+
+			if (_currentPath == null ||
+				(currentGrid != _lastGridPos && isCenteredOnCurrentCell))
+			{
+				_lastGridPos = currentGrid;
+				_currentPath = Pathfinder.FindFastestPath(
+					currentGrid,
+					DestinationGrid,
+					_gridSystem.RoadCells,
+					_gridSystem.ObstacleCells,
+					_gridSystem.CellCosts,
+					MoveSpeed,
+					useRoadCosts: false);
+				_pathIndex = 0;
+			}
+
+			if (_currentPath.Count == 0 || _pathIndex >= _currentPath.Count)
+			{
+				Velocity = Vector2.Zero;
+				return;
+			}
+
+			Vector2I targetGrid = _currentPath[_pathIndex];
+			Vector2 targetPos = _gridSystem.GridToWorld(targetGrid);
+
+			// TODO: 在这里按目标地块类型判断速度；当前怪物在所有可通行地块上都使用默认速度。
+			float targetSpeed = MoveSpeed;
+			Velocity = SmoothMovement.GetVelocity(
+				GlobalPosition,
+				targetPos,
+				targetSpeed,
+				Config.NpcAcceleration,
+				currentSpeed,
+				delta);
+
+			float distanceToTarget = GlobalPosition.DistanceTo(targetPos);
+			if (distanceToTarget <= Velocity.Length() * delta + 1f)
+			{
+				GlobalPosition = targetPos;
+				_pathIndex++;
+				return;
+			}
+
 			MoveAndSlide();
 		}
 
 		private bool HandleLeak()
 		{
-			if (Position.X >= Config.EnemyLeakBoundaryX)
+			if (_gridSystem == null ||
+				_gridSystem.WorldToGrid(GlobalPosition) != DestinationGrid ||
+				GlobalPosition.DistanceTo(_gridSystem.GridToWorld(DestinationGrid)) > 1f)
 			{
 				return false;
 			}
