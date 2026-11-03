@@ -1,50 +1,25 @@
 [gd_scene format=3 uid="uid://cm26asa3etwdi"]
 
 [ext_resource type="Script" uid="uid://qwaj2qfxdk74" path="res://controls/MapView.cs" id="1_4d7sh"]
-[ext_resource type="Script" uid="uid://dueml43e7rt53" path="res://ui/HUD.cs" id="1_epypp"]
 [ext_resource type="Script" uid="uid://cojt82lais7sm" path="res://core/GameLoop.cs" id="1_wtcfe"]
+[ext_resource type="PackedScene" uid="uid://d0jo662b1sdvk" path="res://Ui.tscn" id="2_4d7sh"]
 [ext_resource type="Script" uid="uid://ccxu6h85ea57x" path="res://systems/GridSystem.cs" id="2_ir8iy"]
-[ext_resource type="Script" uid="uid://cl4l6rrirwg3k" path="res://ui/CardPanel.cs" id="3_epypp"]
 [ext_resource type="Script" uid="uid://bvm864mp4iuww" path="res://systems/EnemySpawner.cs" id="6_hqns4"]
-[ext_resource type="Script" uid="uid://ct751d32dpmpn" path="res://ui/BenchPanel.cs" id="6_kdubu"]
 [ext_resource type="Script" uid="uid://cnq6mnff552qu" path="res://systems/DeliverySystem.cs" id="7_x0ka3"]
-[ext_resource type="Script" uid="uid://bo17brcjximmp" path="res://ui/DeliveryPanel.cs" id="8_4d7sh"]
 
 [node name="Node2D" type="Node2D" unique_id=1154050608]
 script = ExtResource("1_4d7sh")
 
+[node name="GameLoop" type="Node" parent="." unique_id=637401558]
+script = ExtResource("1_wtcfe")
+
+[node name="CanvasLayer" parent="." unique_id=626958304 instance=ExtResource("2_4d7sh")]
+
 [node name="GridSystem" type="Node2D" parent="." unique_id=1673781068]
 script = ExtResource("2_ir8iy")
-
-[node name="HUD" type="Label" parent="." unique_id=879517376]
-offset_right = 300.0
-offset_bottom = 100.0
-script = ExtResource("1_epypp")
-
-[node name="cardpanel" type="VBoxContainer" parent="." unique_id=12346694]
-offset_top = 200.0
-offset_right = 183.0
-offset_bottom = 335.0
-script = ExtResource("3_epypp")
-
-[node name="benchpanel" type="HBoxContainer" parent="." unique_id=127239247]
-offset_left = 3.0
-offset_top = 448.0
-offset_right = 403.0
-offset_bottom = 648.0
-script = ExtResource("6_kdubu")
 
 [node name="EnemySpawner" type="Node" parent="." unique_id=1357455041]
 script = ExtResource("6_hqns4")
 
 [node name="DeliverySystem" type="Node" parent="." unique_id=1792174592]
 script = ExtResource("7_x0ka3")
-
-[node name="GameLoop" type="Node" parent="." unique_id=637401558]
-script = ExtResource("1_wtcfe")
-
-[node name="Button" type="Button" parent="." unique_id=129802439]
-offset_left = 646.0
-offset_right = 846.0
-offset_bottom = 200.0
-script = ExtResource("8_4d7sh")

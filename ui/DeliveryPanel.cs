@@ -1,18 +1,18 @@
 using Godot;
 using CoopDefense.Core;
-
+using CoopDefense.Logistics;
 namespace CoopDefense.UI
 {
 	public partial class DeliveryPanel : Button
 	{
 		private GameLoop _gameLoop;
-		private CoopDefense.Logistics.DeliverySystem _deliverySystem;
+		private DeliverySystem _deliverySystem;
 
 		public override void _Ready()
 		{
 			GD.Print(">>> DeliveryPanel 启动！");
 			_gameLoop = GetTree().Root.FindChild("GameLoop", true, false) as GameLoop;
-			_deliverySystem = GetTree().Root.FindChild("DeliverySystem", true, false) as CoopDefense.Logistics.DeliverySystem;
+			_deliverySystem = GetTree().Root.FindChild("DeliverySystem", true, false) as DeliverySystem;
 
 			// 设置按钮的初始文字
 			UpdateButtonText();

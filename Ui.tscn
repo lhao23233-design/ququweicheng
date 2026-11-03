@@ -1,0 +1,142 @@
+[gd_scene format=3 uid="uid://d0jo662b1sdvk"]
+
+[ext_resource type="Script" uid="uid://dueml43e7rt53" path="res://ui/HUD.cs" id="1_hud"]
+[ext_resource type="Script" uid="uid://bo17brcjximmp" path="res://ui/DeliveryPanel.cs" id="1_p07f7"]
+[ext_resource type="Script" uid="uid://cl4l6rrirwg3k" path="res://ui/CardPanel.cs" id="2_card"]
+[ext_resource type="Script" uid="uid://ct751d32dpmpn" path="res://ui/BenchPanel.cs" id="3_bench"]
+
+[node name="CanvasLayer" type="CanvasLayer" unique_id=626958304]
+
+[node name="Control" type="Control" parent="." unique_id=1605462043]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HUD" type="Label" parent="Control" unique_id=879517376]
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 100.0
+script = ExtResource("1_hud")
+
+[node name="CardPanel" type="Control" parent="Control" unique_id=12346694]
+anchors_preset = 0
+offset_top = 200.0
+offset_right = 183.0
+offset_bottom = 340.0
+script = ExtResource("2_card")
+
+[node name="Card1Button2" type="Button" parent="Control/CardPanel" unique_id=736653116]
+layout_mode = 0
+offset_top = 632.0
+offset_right = 128.0
+offset_bottom = 888.0
+
+[node name="Card2Button" type="Button" parent="Control/CardPanel" unique_id=448175853]
+layout_mode = 0
+offset_left = 136.0
+offset_top = 632.0
+offset_right = 264.0
+offset_bottom = 888.0
+
+[node name="Card3Button2" type="Button" parent="Control/CardPanel" unique_id=149087516]
+layout_mode = 0
+offset_left = 272.0
+offset_top = 632.0
+offset_right = 400.0
+offset_bottom = 888.0
+
+[node name="Card4Button3" type="Button" parent="Control/CardPanel" unique_id=1946876983]
+layout_mode = 0
+offset_left = 408.0
+offset_top = 632.0
+offset_right = 536.0
+offset_bottom = 888.0
+
+[node name="Card5Button3" type="Button" parent="Control/CardPanel" unique_id=1209072983]
+layout_mode = 0
+offset_left = 544.0
+offset_top = 632.0
+offset_right = 672.0
+offset_bottom = 888.0
+
+[node name="Card6Button4" type="Button" parent="Control/CardPanel" unique_id=388600219]
+layout_mode = 0
+offset_left = 680.0
+offset_top = 632.0
+offset_right = 808.0
+offset_bottom = 888.0
+
+[node name="Card7Button5" type="Button" parent="Control/CardPanel" unique_id=1060937962]
+layout_mode = 0
+offset_left = 816.0
+offset_top = 632.0
+offset_right = 944.0
+offset_bottom = 888.0
+
+[node name="Card8Button6" type="Button" parent="Control/CardPanel" unique_id=1352260748]
+layout_mode = 0
+offset_left = 952.0
+offset_top = 632.0
+offset_right = 1080.0
+offset_bottom = 888.0
+
+[node name="Card9Button7" type="Button" parent="Control/CardPanel" unique_id=1925187692]
+layout_mode = 0
+offset_left = 1088.0
+offset_top = 632.0
+offset_right = 1216.0
+offset_bottom = 888.0
+
+[node name="Card10Button8" type="Button" parent="Control/CardPanel" unique_id=317543931]
+layout_mode = 0
+offset_left = 1224.0
+offset_top = 632.0
+offset_right = 1352.0
+offset_bottom = 888.0
+
+[node name="BenchPanel" type="Control" parent="Control" unique_id=127239247]
+anchors_preset = 0
+offset_left = 3.0
+offset_top = 448.0
+offset_right = 403.0
+offset_bottom = 488.0
+script = ExtResource("3_bench")
+
+[node name="Slot1Button" type="Button" parent="Control/BenchPanel" unique_id=618499184]
+layout_mode = 0
+offset_right = 76.0
+offset_bottom = 40.0
+
+[node name="Slot2Button" type="Button" parent="Control/BenchPanel" unique_id=788698584]
+layout_mode = 0
+offset_left = 80.0
+offset_right = 156.0
+offset_bottom = 40.0
+
+[node name="Slot3Button" type="Button" parent="Control/BenchPanel" unique_id=224228636]
+layout_mode = 0
+offset_left = 160.0
+offset_right = 236.0
+offset_bottom = 40.0
+
+[node name="Slot4Button" type="Button" parent="Control/BenchPanel" unique_id=335639868]
+layout_mode = 0
+offset_left = 240.0
+offset_right = 316.0
+offset_bottom = 40.0
+
+[node name="Slot5Button" type="Button" parent="Control/BenchPanel" unique_id=242116207]
+layout_mode = 0
+offset_left = 320.0
+offset_right = 396.0
+offset_bottom = 40.0
+
+[node name="DeliveryButton" type="Button" parent="Control" unique_id=887774212]
+layout_mode = 0
+offset_left = 1728.0
+offset_right = 1920.0
+offset_bottom = 192.0
+script = ExtResource("1_p07f7")

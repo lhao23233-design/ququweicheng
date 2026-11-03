@@ -44,7 +44,7 @@ public static class Config {
 	public const float EnemyMoveSpeed = 80f;
 	public const float EnemyAttackDamage = 10f;
 	public const float EnemyAttackInterval = 1f;
-	public const float EnemyAttackRange = 100f;
+	public const float EnemyAttackRange = 64f;
 	public const float EnemyIdleAttackRetryInterval = 0.1f;
 	public const float EnemyDefenseDamageMultiplier = 5f;
 	public const float EnemyCollisionSize = 60f;
@@ -65,13 +65,5 @@ public static class Config {
     public const int GridWidth = 30;
     public const int GridHeight = 17;
 	public static int MapId=1;
-	//关键位置暂时
-	public static Vector2I CrystalPos=new Vector2I(3, 14);
-	public static Vector2I EnemySpawnPos=new Vector2I(29, 8);
-	public static Vector2I DeliveryEntryPos=new Vector2I(15, 0);
-	public static Vector2I DeliveryExitPos=new Vector2I(15, 16);
-	public static readonly HashSet<Vector2I> KeyPositions = new HashSet<Vector2I>
-	{
-    CrystalPos, EnemySpawnPos, DeliveryEntryPos, DeliveryExitPos
-	};
 }
+

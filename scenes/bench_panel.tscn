@@ -1,10 +1,11 @@
-[gd_scene format=3 uid="uid://nmxa2tgpyrax"]
+[gd_scene load_steps=3 format=3 uid="uid://nmxa2tgpyrax"]
 
-[ext_resource type="Script" uid="uid://ct751d32dpmpn" path="res://ui/BenchPanel.cs" id="1_jmslw"]
+[ext_resource type="Script" uid="uid://cojt82lais7sm" path="res://core/GameLoop.cs" id="1_loop"]
+[ext_resource type="PackedScene" uid="uid://d0jo662b1sdvk" path="res://Ui.tscn" id="2_ui"]
 
-[node name="BenchPanel" type="Node2D" unique_id=548012091]
+[node name="BenchPanelTest" type="Node2D"]
 
-[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1045064390]
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("1_jmslw")
+[node name="GameLoop" type="Node" parent="."]
+script = ExtResource("1_loop")
+
+[node name="CanvasLayer" parent="." instance=ExtResource("2_ui")]

@@ -2,26 +2,30 @@ using Godot;
 using CoopDefense.Core;
 using CoopDefense.Player;
 
-public partial class CardPanel : VBoxContainer
+public partial class CardPanel : Control
 {
 	private GameLoop _gameLoop;
 	private CardSystem _cardSystem;
-	private Button[] _cardButtons = new Button[3];
+	private readonly Button[] _cardButtons = new Button[3];
 
 	public override void _Ready()
 	{
-		_gameLoop = GetNode<GameLoop>("../GameLoop");
+		_gameLoop = GetTree().Root.FindChild("GameLoop", true, false) as GameLoop;
+		if (_gameLoop == null)
+		{
+			GD.PushError($"{nameof(CardPanel)} requires a GameLoop node.");
+			return;
+		}
+
 		_cardSystem = new CardSystem(_gameLoop.State.Player1);
 		_cardSystem.RefreshPage();
 
 		for (int i = 0; i < 3; i++)
 		{
-			_cardButtons[i] = new Button();
-			AddChild(_cardButtons[i]);
-
-			int index = i;
+			_cardButtons[i] = GetNode<Button>($"Card{i + 1}Button");
 
 			// 按钮点击：买进备战席
+			int index = i;
 			_cardButtons[i].Pressed += () =>
 			{
 				// 调用 CardSystem 扣钱并塞进 Bench

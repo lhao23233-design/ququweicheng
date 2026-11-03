@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 
 namespace CoopDefense.Logistics
 {
@@ -8,6 +9,19 @@ namespace CoopDefense.Logistics
 		public const int CellSize = Config.CellSize;
 		public const int GridWidth = Config.GridWidth;
 		public const int GridHeight = Config.GridHeight;
+		public Vector2I CrystalPos { get; private set; }
+		public Vector2I EnemySpawnPos { get; private set; }
+		public Vector2I DeliveryEntryPos { get; private set; }
+		public Vector2I DeliveryExitPos { get; private set; }
+		// 这是一个全局公开的只读集合，谁都可以查
+		public HashSet<Vector2I> KeyPositions { get; private set; } = new HashSet<Vector2I>();
+		public void SetupAnchors(Vector2I crystal, Vector2I spawn, Vector2I entry, Vector2I exit)
+		{
+			CrystalPos = crystal;
+			EnemySpawnPos = spawn;
+			DeliveryEntryPos = entry;
+			DeliveryExitPos = exit;
+		}
 		// 记录每一格的移动耗时（秒）
 		public Dictionary<Vector2I, float> CellCosts { get; private set; } = new Dictionary<Vector2I, float>();
 		// 记录所有地块的视觉节点
@@ -17,36 +31,49 @@ namespace CoopDefense.Logistics
 
 		public override void _Ready()
 		{
-			// 1. 生成所有网格
+			// 1. 先向 MapGenerator 要地图数据（这会动态抽一张图，并解析出坐标和墙）
+			var mapData = Map.MapGenerator.GenerateMapData();
+			
+			// 2. 把解析出来的坐标，赋值给 GridSystem 自己的属性
+			SetupAnchors(
+				mapData.CrystalPos, 
+				mapData.EnemySpawnPos, 
+				mapData.DeliveryEntryPos, 
+				mapData.DeliveryExitPos
+			);
+
+			// 3. 生成所有基础网格
 			for (int x = 0; x < GridWidth; x++)
 			{
 				for (int y = 0; y < GridHeight; y++)
 				{
 					var cell = new ColorRect
 					{
-						Color = new Color(0.15f, 0.15f, 0.15f), // 深灰色
-						Size = new Vector2(CellSize-2, CellSize-2), // 留2像素当网格
-						Position = new Vector2(x * CellSize + 1, y * CellSize + 1),//略大一圈好作判定
-						MouseFilter = Control.MouseFilterEnum.Ignore // 不让网格挡住鼠标点击！
+						Color = new Color(0.15f, 0.15f, 0.15f),
+						Size = new Vector2(CellSize - 2, CellSize - 2),
+						Position = new Vector2(x * CellSize + 1, y * CellSize + 1),
+						MouseFilter = Control.MouseFilterEnum.Ignore
 					};
-					// ------------------------------------------------
-
 					AddChild(cell);
-					_cells[new Vector2I(x, y)] = cell; // 记录这个地块
+					_cells[new Vector2I(x, y)] = cell;
 				}
 			}
 
-			// 2. 涂抹关键位置（注意要放在循环外面，只执行一次）
-			ObstacleCells = Map.MapGenerator.GenerateObstacleCells();
-			PaintCell(Config.CrystalPos,Colors.Blue);   // 小水晶 (左下角)
-			PaintCell(Config.EnemySpawnPos, Colors.Red);    // 怪物出怪口 (右侧中间)
-			PaintCell(Config.DeliveryEntryPos, Colors.Yellow); // 运钞车入口 (正上方)
-			PaintCell(Config.DeliveryExitPos, Colors.Green); // 传输口 (正下方)
-			//3. 生成障碍物
+			// 4. 涂抹关键位置（用刚赋值的动态属性，不要用 Config）
+			PaintCell(CrystalPos, Colors.Blue);   
+			PaintCell(EnemySpawnPos, Colors.Red);    
+			PaintCell(DeliveryEntryPos, Colors.Yellow); 
+			PaintCell(DeliveryExitPos, Colors.Green); 
+
+			// 5. 临时构造一个 HashSet 用来检查
+			KeyPositions = new HashSet<Vector2I> { CrystalPos, EnemySpawnPos, DeliveryEntryPos, DeliveryExitPos };
+
+			// 6. 生成障碍物并绘制
+			ObstacleCells = mapData.ObstacleCells; // 假设你在 MapData 里加了 ObstacleCells 属性
 			foreach (var obstacle in ObstacleCells)
 			{
-				//不能占用关键位置
-				if (Config.KeyPositions.Contains(obstacle))
+				// 不能占用关键位置
+				if (KeyPositions.Contains(obstacle))
 				{
 					GD.PrintErr($"障碍物 {obstacle} 占用了关键位置，已忽略！");
 					continue;
@@ -54,7 +81,7 @@ namespace CoopDefense.Logistics
 				PaintCell(obstacle, Colors.Black);
 			}
 
-			GD.Print("网格生成完毕！地标绘制完毕！");
+			GD.Print($"网格生成完毕！当前使用地图，水晶在 {CrystalPos}。");
 		}
 
 		// World positions are converted to grid-local coordinates before resolving the cell.

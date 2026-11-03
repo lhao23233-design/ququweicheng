@@ -21,7 +21,6 @@ namespace CoopDefense.Combat
 		private List<Vector2I> _currentPath;
 		private int _pathIndex;
 		private Vector2I _lastGridPos = new Vector2I(-1, -1);
-		private static readonly Vector2I DestinationGrid = Config.CrystalPos;
 
 		public override void _Ready()
 		{
@@ -104,8 +103,9 @@ namespace CoopDefense.Combat
 			Vector2 currentCellCenter = _gridSystem.GridToWorld(currentGrid);
 			bool isCenteredOnCurrentCell = GlobalPosition.DistanceTo(currentCellCenter) <= 1f;
 			float currentSpeed = Velocity.Length();
+			Vector2I destinationGrid = GetPathTarget();
 
-			if (currentGrid == DestinationGrid)
+			if (currentGrid == destinationGrid)
 			{
 				float distanceToCenter = GlobalPosition.DistanceTo(currentCellCenter);
 				if (distanceToCenter <= currentSpeed * delta + 1f)
@@ -132,7 +132,7 @@ namespace CoopDefense.Combat
 				_lastGridPos = currentGrid;
 				_currentPath = Pathfinder.FindFastestPath(
 					currentGrid,
-					DestinationGrid,
+					destinationGrid,
 					_gridSystem.RoadCells,
 					_gridSystem.ObstacleCells,
 					_gridSystem.CellCosts,
@@ -174,8 +174,8 @@ namespace CoopDefense.Combat
 		private bool HandleLeak()
 		{
 			if (_gridSystem == null ||
-				_gridSystem.WorldToGrid(GlobalPosition) != DestinationGrid ||
-				GlobalPosition.DistanceTo(_gridSystem.GridToWorld(DestinationGrid)) > 1f)
+				_gridSystem.WorldToGrid(GlobalPosition) != _gridSystem.CrystalPos ||
+				GlobalPosition.DistanceTo(_gridSystem.GridToWorld(_gridSystem.CrystalPos)) > 1f)
 			{
 				return false;
 			}
@@ -249,6 +249,10 @@ namespace CoopDefense.Combat
 		{
 			GD.Print("敌人被消灭！");
 			QueueFree();
+		}
+		protected virtual Vector2I GetPathTarget()
+		{
+			return _gridSystem.CrystalPos;
 		}
 	}
 }

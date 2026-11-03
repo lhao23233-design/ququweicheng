@@ -14,9 +14,6 @@ namespace CoopDefense.Entities
         private int _pathIndex = 0;
         private Vector2I _lastGridPos = new Vector2I(-1, -1);//记录上一次
         private float _spawnFreezeTimer = 0.5f; // 出生后先冻结半秒
-        private static readonly Vector2I DestinationGrid = Config.DeliveryExitPos;//运输目的地
-
-
         public override void _Ready()
         {
             AddToGroup("Deliveries");
@@ -46,8 +43,7 @@ namespace CoopDefense.Entities
             bool isCenteredOnCurrentCell = GlobalPosition.DistanceTo(currentCellCenter) <= 1f;
             float currentSpeed = Velocity.Length();
 
-            if (currentGrid == DestinationGrid &&
-                GlobalPosition.DistanceTo(currentCellCenter) <= currentSpeed * (float)delta + 1f)
+            if (currentGrid == _gridSystem.DeliveryExitPos && GlobalPosition.DistanceTo(currentCellCenter) <= currentSpeed * (float)delta + 1f)
             {
                 GlobalPosition = currentCellCenter;
                 ReachDestination();
@@ -63,7 +59,7 @@ namespace CoopDefense.Entities
                 var blocked = _gridSystem.ObstacleCells;  
                 _currentPath = Systems.Pathfinder.FindFastestPath(
                     currentGrid, 
-                    DestinationGrid, 
+                    _gridSystem.DeliveryExitPos, 
                     _gridSystem.RoadCells, 
                     blocked, 
                     _gridSystem.CellCosts

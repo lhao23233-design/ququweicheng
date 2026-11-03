@@ -32,11 +32,11 @@ public partial class MapView : Node2D
 		{
 			Vector2 mousePos = GetGlobalMousePosition();
 			Vector2I gridPos = _gridSystem.WorldToGrid(mousePos);
-			GD.Print($"尝试在网格 {gridPos} 铺路");
 			// 如果开启了铺路模式，就执行铺路
 			if (_isRoadBuildMode)
 			{
-				if(!_gridSystem.RoadCells.Contains(gridPos) && !_gridSystem.ObstacleCells.Contains(gridPos)&&!Config.KeyPositions.Contains(gridPos))
+				GD.Print($"尝试在网格 {gridPos} 铺路");
+				if(!_gridSystem.RoadCells.Contains(gridPos) && !_gridSystem.ObstacleCells.Contains(gridPos)&&!_gridSystem.KeyPositions.Contains(gridPos))// 不能在障碍物或关键位置上铺路
 				{
 					_gridSystem.BuildRoad(gridPos);
 					GD.Print($"铺路成功！网格 {gridPos} 已变为道路。");
@@ -54,16 +54,24 @@ public partial class MapView : Node2D
 			{
 				// 1. 尝试扣体力
 				if (player.TryConsumeStamina(Config.StaminaDeploy))
-				{
-					// 2. 生成方块
-					Vector2 clickPos = GetGlobalMousePosition();
-					SpawnTower(clickPos);
-					
-					GD.Print($"合成成功！部署了: {player.Bench[player.SelectedCardIndex].Name}");
-					
-					// 3. 重点：从备战席中删除这张卡，并清空选中状态
-					player.Bench.RemoveAt(player.SelectedCardIndex);
-					player.SelectedCardIndex = -1;
+				{	
+					// 2. 检查网格是否可部署,不可部署在障碍物或关键位置上
+					if(!_gridSystem.ObstacleCells.Contains(gridPos)&&!_gridSystem.KeyPositions.Contains(gridPos))
+					{
+						string deployedCardName = player.Bench[player.SelectedCardIndex].Name;
+						// 3. 生成方块
+						Vector2 clickPos = GetGlobalMousePosition();
+						SpawnTower(clickPos);
+						// 4. 重点：从备战席中删除这张卡，并清空选中状态
+						player.Bench.RemoveAt(player.SelectedCardIndex);
+						player.SelectedCardIndex = -1;
+						GD.Print($"合成成功！部署了: {deployedCardName}");
+					}
+					else
+					{
+						GD.Print($"合成失败！网格 {gridPos} 不可部署。");
+					}
+
 				}
 				else
 				{

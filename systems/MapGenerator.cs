@@ -21,9 +21,9 @@ namespace CoopDefense.Map
                 "000000000000000000000100000000",
                 "000000000000000000000100000000",
                 "000000011100000000011100000000",
-                "000000000000000000010100000000",
-                "020000010000000000010100000030",
-                "000000010000000000010000000000",
+                "110000000000000000010100000011",
+                "120000010000000000010100000031",
+                "110000010000000000010000000011",
                 "000000010000000000010100000000",
                 "000000010000000000010100000000",
                 "000000010000000000000100000000",
@@ -46,48 +46,43 @@ namespace CoopDefense.Map
         return keys[randomIndex];
         }
         // 解析地图：把字符串数组翻译成障碍物坐标集合
-        public static HashSet<Vector2I> GenerateObstacleCells()
+                // 接收：抽取哪个地图（传空字符串代表随机）
+        public static MapData GenerateMapData(string specificMapId = "")
         {
-            string mapKey = GetRandomMap();
-            if (!mapTemplates.ContainsKey(mapKey))
-            {
-                GD.PrintErr($"地图模板 {mapKey} 不存在！");
-                return new HashSet<Vector2I>();
-            }
+            string mapKey = string.IsNullOrEmpty(specificMapId) ? GetRandomMap() : specificMapId;
+            
+            var mapDataResult = new MapData();
+            mapDataResult.Layout = mapTemplates[mapKey];
+            
+            // 用来找墙
+            var obstacleCells = new HashSet<Vector2I>();
 
-            string[] mapData = mapTemplates[mapKey];
-            var ObstacleCells = new HashSet<Vector2I>();
-
-            for (int y = 0; y < mapData.Length; y++)
+            for (int y = 0; y < mapDataResult.Layout.Length; y++)
             {
-                string row = mapData[y];
+                string row = mapDataResult.Layout[y];
                 for (int x = 0; x < row.Length; x++)
                 {
-                    if (row[x] == '1') // '1' 表示墙
-                    {
-                        ObstacleCells.Add(new Vector2I(x, y));
-                        //把new Vector2I(x, y) 加入 HashSet并返回；
-                    }
-                    if(row[x]=='2') // '2' 表示水晶
-                    {
-                        Config.CrystalPos = new Vector2I(x, y);
-                    }
-                    if(row[x]=='3') // '3' 表示敌人出生点
-                    {
-                        Config.EnemySpawnPos = new Vector2I(x, y);
-                    }
-                    if(row[x]=='4') // '4' 表示运输单位出生点
-                    {
-                        Config.DeliveryEntryPos = new Vector2I(x, y);
-                    }
-                    if(row[x]=='5') // '5' 表示敌人出生点
-                    {
-                        Config.DeliveryExitPos = new Vector2I(x, y);
-                    }
-                //让 Config 里的关键位置变量都指向对应的 Vector2I 坐标。
+                    char c = row[x];
+                    Vector2I pos = new Vector2I(x, y);
+
+                    if (c == '1') obstacleCells.Add(pos);
+                    else if (c == '2') mapDataResult.CrystalPos = pos;
+                    else if (c == '3') mapDataResult.EnemySpawnPos = pos;
+                    else if (c == '4') mapDataResult.DeliveryEntryPos = pos;
+                    else if (c == '5') mapDataResult.DeliveryExitPos = pos;
                 }
             }
-            return ObstacleCells;
+            mapDataResult.ObstacleCells = obstacleCells;
+            return mapDataResult;
         }
+    }
+    public class MapData
+    {
+        public string[] Layout;             // 字符画
+        public Vector2I CrystalPos;         // 水晶位置
+        public Vector2I EnemySpawnPos;      // 出怪口位置
+        public Vector2I DeliveryEntryPos;   // 入口位置
+        public Vector2I DeliveryExitPos;    // 出口位置
+        public HashSet<Vector2I> ObstacleCells = new HashSet<Vector2I>(); 
     }
 }
