@@ -4,7 +4,7 @@ using CoopDefense.Core;
 public partial class BenchPanel : Control
 {
 	private GameLoop _gameLoop;
-	private readonly Button[] _slots = new Button[5];
+	private readonly Button[] _slots = new Button[10];
 
 	public override void _Ready()
 	{
@@ -16,7 +16,7 @@ public partial class BenchPanel : Control
 		}
 
 		// Buttons are scene children so their positions remain editable in Godot.
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 10; i++)
 		{
 			_slots[i] = GetNode<Button>($"Slot{i + 1}Button");
 			_slots[i].Text = "空";
@@ -38,15 +38,11 @@ public partial class BenchPanel : Control
 
 	public override void _Process(double delta)
 	{
-		if (_gameLoop == null)
-		{
-			return;
-		}
-
+		if (_gameLoop == null || _gameLoop.State == null || _gameLoop.State.Player1 == null) return;
 		var bench = _gameLoop.State.Player1.Bench;
-		
 		for (int i = 0; i < _slots.Length; i++)
 		{
+			if (_slots[i] == null) continue; 
 			if (i < bench.Count)
 			{
 				_slots[i].Text = bench[i].Name;

@@ -49,9 +49,7 @@ namespace CoopDefense.Entities
                 ReachDestination();
                 return;
             }
-
-            // Replan on cell changes only after reaching that cell's center. Otherwise
-            // the next waypoint can skip the center of the cell just entered.
+            //走到格子中心再重新算路
             if (_currentPath == null || _pathIndex >= _currentPath.Count ||
                 (currentGrid != _lastGridPos && isCenteredOnCurrentCell))
             {

@@ -28,50 +28,54 @@ public partial class MapView : Node2D
 	}
 	public override void _UnhandledInput(InputEvent @event)
 	{
-		if (@event is InputEventMouseButton LeftmouseEvent && LeftmouseEvent.Pressed && LeftmouseEvent.ButtonIndex == MouseButton.Left)
+		HandleEscapeInput(@event);
+		// ================= 处理鼠标左键 =================
+		if (@event is InputEventMouseButton leftEvent && leftEvent.Pressed && leftEvent.ButtonIndex == MouseButton.Left)
 		{
 			Vector2 mousePos = GetGlobalMousePosition();
 			Vector2I gridPos = _gridSystem.WorldToGrid(mousePos);
-			// 如果开启了铺路模式，就执行铺路
+
+			// 情况 A：铺路模式
 			if (_isRoadBuildMode)
 			{
 				GD.Print($"尝试在网格 {gridPos} 铺路");
-				if(!_gridSystem.RoadCells.Contains(gridPos) && !_gridSystem.ObstacleCells.Contains(gridPos)&&!_gridSystem.KeyPositions.Contains(gridPos))// 不能在障碍物或关键位置上铺路
+				if (!_gridSystem.RoadCells.Contains(gridPos) 
+					&& !_gridSystem.ObstacleCells.Contains(gridPos) 
+					&& !_gridSystem.KeyPositions.Contains(gridPos))
 				{
 					_gridSystem.BuildRoad(gridPos);
-					GD.Print($"铺路成功！网格 {gridPos} 已变为道路。");
+					GD.Print($"铺路成功！");
 				}
 				else
 				{
-					GD.Print($"铺路失败！网格 {gridPos} 已经是道路或障碍物。");
+					GD.Print($"铺路失败！该位置不可铺路。");
 				}
-				return; // 铺完路直接返回，不执行建塔逻辑
+				return; // 铺路模式处理完直接退出
 			}
+
+			// 情况 B：建塔模式
 			var player = _gameLoop.State.Player1;
-			// 否则，执行原本的“建炮塔”逻辑
-			// 判断是否在备战席选中了卡牌
 			if (player.SelectedCardIndex >= 0)
 			{
-				// 1. 尝试扣体力
-				if (player.TryConsumeStamina(Config.StaminaDeploy))
-				{	
-					// 2. 检查网格是否可部署,不可部署在障碍物或关键位置上
-					if(!_gridSystem.ObstacleCells.Contains(gridPos)&&!_gridSystem.KeyPositions.Contains(gridPos))
-					{
-						string deployedCardName = player.Bench[player.SelectedCardIndex].Name;
-						// 3. 生成方块
-						Vector2 clickPos = GetGlobalMousePosition();
-						SpawnTower(clickPos);
-						// 4. 重点：从备战席中删除这张卡，并清空选中状态
-						player.Bench.RemoveAt(player.SelectedCardIndex);
-						player.SelectedCardIndex = -1;
-						GD.Print($"合成成功！部署了: {deployedCardName}");
-					}
-					else
-					{
-						GD.Print($"合成失败！网格 {gridPos} 不可部署。");
-					}
+				// 核心优化 1：先判断地形合不合法！
+				if (_gridSystem.ObstacleCells.Contains(gridPos) || _gridSystem.KeyPositions.Contains(gridPos))
+				{
+					GD.Print($"建塔失败！网格 {gridPos} 是障碍物或关键位置。");
+					return; // 先 return，不扣体力
+				}
 
+				// 核心优化 2：地形合法了，再检查体力
+				if (player.TryConsumeStamina(Config.StaminaDeploy))
+				{
+					string deployedCardName = player.Bench[player.SelectedCardIndex].Name;
+					
+					// 生成方块
+					SpawnTower(mousePos);
+					
+					// 从备战席中删除卡牌并清空选中
+					player.Bench.RemoveAt(player.SelectedCardIndex);
+					player.SelectedCardIndex = -1;
+					GD.Print($"合成成功！部署了: {deployedCardName}");
 				}
 				else
 				{
@@ -79,15 +83,25 @@ public partial class MapView : Node2D
 				}
 			}
 		}
-		else if (@event is InputEventMouseButton rightMouseEvent && rightMouseEvent.Pressed && rightMouseEvent.ButtonIndex == MouseButton.Right)
+		// ================= 处理鼠标右键 =================
+		else if (@event is InputEventMouseButton rightEvent && rightEvent.Pressed && rightEvent.ButtonIndex == MouseButton.Right)
 		{
-			Vector2 mousePos = GetGlobalMousePosition();
-			Vector2I gridPos = _gridSystem.WorldToGrid(mousePos);
-			GD.Print($"右键点击网格 {gridPos}");
+			// 1. 铺路模式：拆路
 			if (_isRoadBuildMode)
 			{
-			_gridSystem.DeleteRoad(gridPos);
-			return; // 拆完路直接返回，不执行其他逻辑
+				Vector2 mousePos = GetGlobalMousePosition();
+				Vector2I gridPos = _gridSystem.WorldToGrid(mousePos);
+				GD.Print($"右键拆除网格 {gridPos} 的路");
+				_gridSystem.DeleteRoad(gridPos);
+				return;
+			}
+			
+			// 2. 普通模式：取消选中卡牌
+			var player = _gameLoop.State.Player1;
+			if (player.SelectedCardIndex >= 0)
+			{
+				player.SelectedCardIndex = -1;
+				GD.Print("已取消选中，变回空手。");
 			}
 		}
 	}
@@ -125,5 +139,32 @@ public partial class MapView : Node2D
 		// 5. 设置塔的位置并加入场景
 		tower.Position = centerPos;
 		AddChild(tower);
+	}
+	// 1. 独立的方法
+	private void HandleEscapeInput(InputEvent @event)
+	{
+		// 判断是不是键盘事件
+		if (@event is InputEventKey keyEvent && keyEvent.Pressed && !keyEvent.Echo)
+		{
+			// 判断是不是按下了 ESC
+			if (keyEvent.Keycode == Key.Escape)
+			{
+				if (_isRoadBuildMode)
+				{
+					_isRoadBuildMode = false;
+					GD.Print("退出铺路模式");
+					return;
+				}
+				var player = _gameLoop.State.Player1;
+				if (player.SelectedCardIndex >= 0)
+				{
+					player.SelectedCardIndex = -1;
+					GD.Print("按下了 ESC，已取消选中。");
+					
+					// 如果你有预览图，在这里关闭
+					// _previewSprite.Visible = false;
+				}
+			}
+		}
 	}
 }

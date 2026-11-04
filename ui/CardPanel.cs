@@ -6,7 +6,7 @@ public partial class CardPanel : Control
 {
 	private GameLoop _gameLoop;
 	private CardSystem _cardSystem;
-	private readonly Button[] _cardButtons = new Button[3];
+	private readonly Button[] _cardButtons = new Button[6];
 
 	public override void _Ready()
 	{
@@ -20,7 +20,7 @@ public partial class CardPanel : Control
 		_cardSystem = new CardSystem(_gameLoop.State.Player1);
 		_cardSystem.RefreshPage();
 
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < _cardButtons.Length; i++)
 		{
 			_cardButtons[i] = GetNode<Button>($"Card{i + 1}Button");
 
@@ -43,7 +43,7 @@ public partial class CardPanel : Control
 
 	private void UpdateCardText()
 	{
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < _cardButtons.Length; i++)
 		{
 			if (i < _cardSystem.CurrentPage.Count)
 			{

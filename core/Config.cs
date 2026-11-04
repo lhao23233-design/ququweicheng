@@ -2,8 +2,8 @@ using Godot;
 using System.Collections.Generic;
 public static class Config {
 	// 时间
-	public const float RestPhaseDuration = 3f;
-	public const float CombatPhaseDuration = 3f;
+	public const float RestPhaseDuration = 10f;
+	public const float CombatPhaseDuration = 10f;
 
 	// 体力
 	public const float StaminaMax = 100f;

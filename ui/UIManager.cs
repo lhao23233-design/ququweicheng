@@ -27,9 +27,7 @@ namespace CoopDefense.UI
 			_isHudHidden = !_isHudHidden;
 			
 			// 把 UI 容器的可见性设置为状态的相反值
-			// （如果 _isHudHidden 是 true 代表要隐藏，那 Visible 就是 false）
-			_uiContainer.Visible = !_isHudHidden;
-			
+			// （如果 _isHudHidden 是 true 代表要隐藏，那 Visible 就是 false）	
 			GD.Print($"UI 隐藏状态: {_isHudHidden}");
 		}
 	}
