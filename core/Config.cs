@@ -56,6 +56,7 @@ public static class Config {
     public const float MoveSpeed = 100f;
 	public const float NpcOffRoadSpeedMultiplier = 0.3f;
 	public const float NpcAcceleration = 400f;
+	public const int DeliveriesLeftMAX=5;//次数上限为5
 	// 资源抽取
 	public const float ResourceTickInterval = 10f;
 

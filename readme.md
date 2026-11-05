@@ -23,7 +23,7 @@
 |---|---|
 | 引擎 | Godot 4.7.2 |
 | 语言 | C#（.NET 8） |
-| UI | Godot Control 节点（当前使用 Label、Button、VBoxContainer） |
+| UI | Godot Control 节点（当前使用 RichTextLabel、Button 等） |
 | 单位表现 | 计划使用 2D 方块或简单 Sprite，动画由 Godot AnimationPlayer/AnimationTree 驱动 |
 | 数据 | 计划使用 JSON 本地存储（当前尚未实现） |
 | 网络 | 不实现，接口留空 |
@@ -66,6 +66,13 @@
 - 防守单位已有索敌和攻击原型，可对敌人造成伤害；但地图放置目前生成的是测试方块，尚未与防守单位部署打通。
 - 尚未实现：机器人、完整经济/升本、物流合作、Boss、结算数据采集与本地存档。目录中标记为空的脚本仍待实现。
 - 目前休整期、开展期和结算期均为 3 秒测试时长；目标时长仍为休整期/开展期各 60 秒。
+
+### HUD 显示与编辑
+
+- `Ui.tscn` 中的 `UIContainer/RichHUD` 是 HUD 显示节点，使用 `RichTextLabel`，并挂载 `ui/HUD.cs`。
+- `HUD.cs` 从 `GameLoop` 读取当前回合、阶段、倒计时、体力和代币，并按“一项一行”的格式更新文本；数值内容由代码提供，节点位置、尺寸、字体、颜色等外观可在 Godot 编辑器的 Inspector 中调整。
+- 要调整整体位置和宽高，选中 `RichHUD`，修改 **Layout/Transform** 中的位置与尺寸；要调整字号和行间距，修改 **Theme Overrides** 中的字体大小和 `line_separation`。行高由字体度量和行间距共同决定，若目标是约 `64 px`，可先尝试 `48 px` 字号与 `16 px` 行间距，再根据项目字体和预览结果微调。
+- 当前 `RichHUD` 使用 `32 px` 字号和 `8 px` 行间距。内容是单个富文本节点中的多行文本，因此适合统一设置样式；如需在编辑器中分别拖动、设置每一行的颜色或对齐方式，应改用 `VBoxContainer`，并为每项数据建立独立的 `Label`。
 
 ---
 

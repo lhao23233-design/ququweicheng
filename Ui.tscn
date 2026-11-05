@@ -18,10 +18,15 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="HUD" type="Label" parent="UIContainer" unique_id=879517376]
+[node name="RichHUD" type="RichTextLabel" parent="UIContainer" unique_id=923684626]
 layout_mode = 0
-offset_right = 640.0
-offset_bottom = 128.0
+offset_left = 1624.0
+offset_top = 832.0
+offset_right = 1912.0
+offset_bottom = 1088.0
+theme_override_constants/line_separation = 8
+theme_override_font_sizes/normal_font_size = 32
+scroll_active = false
 script = ExtResource("1_hud")
 
 [node name="CardPanel" type="Control" parent="UIContainer" unique_id=12346694]
@@ -154,12 +159,11 @@ offset_bottom = 136.0
 [node name="DeliveryButton" type="Button" parent="UIContainer" unique_id=887774212]
 layout_mode = 0
 offset_left = 1360.0
-offset_top = 833.0
+offset_top = 836.0
 offset_right = 1616.0
-offset_bottom = 1089.0
+offset_bottom = 1092.0
 theme_override_font_sizes/font_size = 48
-text = "呼叫运输车
-cost:10"
+text = ""
 script = ExtResource("1_p07f7")
 
 [node name="ToggleContainer" type="Control" parent="." unique_id=562745834]
@@ -170,9 +174,8 @@ offset_bottom = 40.0
 
 [node name="HideBtn" type="Button" parent="ToggleContainer" unique_id=1295880753]
 layout_mode = 0
-offset_left = 1624.0
-offset_top = 833.0
-offset_right = 1913.0
-offset_bottom = 1089.0
-theme_override_font_sizes/font_size = 64
+offset_left = 1664.0
+offset_right = 1920.0
+offset_bottom = 192.0
+theme_override_font_sizes/font_size = 48
 text = "展开/隐藏"

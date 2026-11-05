@@ -12,6 +12,10 @@ namespace CoopDefense.Data
         public int Coins { get; set; }
         public int SelectedCardIndex { get; set; } = -1;
         public int SelectedCardPrice { get; set; } = 0;
+        //设置每回合运输车剩余次数
+        public int DeliveriesLeftThisRound { get; set; }
+        //设置每回合运输车上限次数
+        public int MaxDeliveriesThisRound { get; set; }=2;
         // 备战席（手牌）：用来存放买下来的材料卡
         public List<Card> Bench { get; private set; } = new List<Card>();
         public PlayerState(int id)

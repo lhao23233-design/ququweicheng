@@ -14,6 +14,7 @@ namespace CoopDefense.Entities
         private int _pathIndex = 0;
         private Vector2I _lastGridPos = new Vector2I(-1, -1);//记录上一次
         private float _spawnFreezeTimer = 0.5f; // 出生后先冻结半秒
+        private static int DestinationTier { get; set; } = 1;
         public override void _Ready()
         {
             AddToGroup("Deliveries");
@@ -123,9 +124,16 @@ namespace CoopDefense.Entities
             GD.Print("运钞车安全抵达传输口！");
             if (_gameLoop != null)
             {
-                _gameLoop.State.Player1.Coins += 30;
+                _gameLoop.State.Player1.Coins +=reward;
             }
             QueueFree();
         }
+        int reward = DestinationTier switch
+        {
+            1 => 30,  // 自己家终点
+            2 => 60,  // 相邻玩家终点（未来扩展）
+            3 => 100, // 非相邻玩家终点（未来扩展）
+            _ => 0
+        };
     }
 }

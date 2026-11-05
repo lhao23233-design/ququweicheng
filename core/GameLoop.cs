@@ -1,3 +1,4 @@
+using CoopDefense.Data;
 using Godot;
 
 namespace CoopDefense.Core
@@ -14,7 +15,7 @@ namespace CoopDefense.Core
 		public Phase CurrentPhase { get; private set; } = Phase.Rest;
 		public float PhaseTimer { get; private set; }	
 		public GameState State { get; } = new();
-		public int CurrentRound { get; private set; } = 1;
+		public int CurrentRound { get;set; }
 
 		// 信号：状态切换时通知 UI
 		[Signal]
@@ -48,14 +49,19 @@ namespace CoopDefense.Core
 					break;
 				case Phase.Combat:
 					CurrentPhase = Phase.Settlement;
-					PhaseTimer = 3f; // 结算期固定3秒，可改
+					PhaseTimer = 5f; // 结算期固定5秒，可改
 					GD.Print("进入结算期");
 					break;
 				case Phase.Settlement:
 					CurrentPhase = Phase.Rest;
 					PhaseTimer = Config.RestPhaseDuration;
 					CurrentRound++;
-					GD.Print("进入休整期，新一轮开始");
+					int maxDeliveries = Config.DeliveriesLeftMAX;
+					//TODO maxDeliveries += State.Player1.BonusDeliveriesFromBuildings;
+					//TODO maxDeliveries += State.Player1.BonusDeliveriesFromRounds;
+					State.Player1.MaxDeliveriesThisRound = maxDeliveries;
+					State.Player1.DeliveriesLeftThisRound = maxDeliveries;
+					GD.Print($"进入休整期，本回合运钞车额度：{maxDeliveries}");
 					break;
 			}
 			EmitSignal(SignalName.PhaseChanged, (int)CurrentPhase);

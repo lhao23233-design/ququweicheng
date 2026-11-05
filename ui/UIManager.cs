@@ -20,14 +20,12 @@ namespace CoopDefense.UI
 		public void ToggleVisibility(bool isVisible)
 		{
 			_uiContainer.Visible = isVisible;
+			_isHudHidden = !isVisible;
 		}
-			private void OnToggleBtnPressed()
+
+		private void OnToggleBtnPressed()
 		{
-			// 切换隐藏状态
-			_isHudHidden = !_isHudHidden;
-			
-			// 把 UI 容器的可见性设置为状态的相反值
-			// （如果 _isHudHidden 是 true 代表要隐藏，那 Visible 就是 false）	
+			ToggleVisibility(!_uiContainer.Visible);
 			GD.Print($"UI 隐藏状态: {_isHudHidden}");
 		}
 	}
