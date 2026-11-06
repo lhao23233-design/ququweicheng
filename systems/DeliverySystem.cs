@@ -32,19 +32,16 @@ namespace CoopDefense.Logistics
 			}
 
 			var player = _gameLoop.State.Player1;
-			
-			if (player.Coins >= Config.NpcCallCost)
+
+			if (player.DeliveriesLeftThisRound <= 0)
 			{
-				player.Coins -= Config.NpcCallCost;
+				GD.Print("本回合运钞车呼叫次数已用尽！");
+				return false;
+			}
+				player.DeliveriesLeftThisRound--;
 				SpawnDelivery(); // 调用你自己的生成方法
 				GD.Print("运钞车已出发！");
 				return true;
-			}
-			else
-			{
-				GD.Print($"代币不足 {Config.NpcCallCost}，无法呼叫运钞车！");
-				return false;
-			}
 		}
 		public void SpawnDelivery()
 		{

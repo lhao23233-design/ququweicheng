@@ -9,7 +9,6 @@ namespace CoopDefense.Entities
     {   
         private GameLoop _gameLoop;
         private GridSystem _gridSystem;
-        private float Health = Config.Health;
         private List<Vector2I> _currentPath;
         private int _pathIndex = 0;
         private Vector2I _lastGridPos = new Vector2I(-1, -1);//记录上一次
@@ -102,23 +101,10 @@ namespace CoopDefense.Entities
             {
                 GlobalPosition = targetPos; // 强行精准吸附到网格正中心
                 _pathIndex++;
-                return; // 这一帧不进行物理移动，下一帧朝新目标走
+                return; // 这一格不进行物理移动，下一格朝新目标走
             }
             MoveAndSlide();
         }
-
-        public void TakeDamage(float damage)
-        {
-            Health -= damage;
-            GD.Print($"运钞车被攻击！剩余血量: {Health}");
-            
-            if (Health <= 0)
-            {
-                GD.Print("运钞车被摧毁！资源丢失。");
-                QueueFree(); 
-            }
-        }
-
         private void ReachDestination()
         {
             GD.Print("运钞车安全抵达传输口！");
@@ -130,9 +116,9 @@ namespace CoopDefense.Entities
         }
         int reward = DestinationTier switch
         {
-            1 => 30,  // 自己家终点
-            2 => 60,  // 相邻玩家终点（未来扩展）
-            3 => 100, // 非相邻玩家终点（未来扩展）
+            1 => 10,  // 自己家终点
+            2 => 20,  // 相邻玩家终点（未来扩展）
+            3 => 40, // 非相邻玩家终点（未来扩展）
             _ => 0
         };
     }

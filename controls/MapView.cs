@@ -43,6 +43,7 @@ public partial class MapView : Node2D
 					&& !_gridSystem.ObstacleCells.Contains(gridPos) 
 					&& !_gridSystem.KeyPositions.Contains(gridPos))
 				{
+					
 					_gridSystem.BuildRoad(gridPos);
 					GD.Print($"铺路成功！");
 				}
@@ -61,26 +62,15 @@ public partial class MapView : Node2D
 				if (_gridSystem.ObstacleCells.Contains(gridPos) || _gridSystem.KeyPositions.Contains(gridPos))
 				{
 					GD.Print($"建塔失败！网格 {gridPos} 是障碍物或关键位置。");
-					return; // 先 return，不扣体力
+					return; 
 				}
-
-				// 核心优化 2：地形合法了，再检查体力
-				if (player.TryConsumeStamina(Config.StaminaDeploy))
-				{
 					string deployedCardName = player.Bench[player.SelectedCardIndex].Name;
-					
 					// 生成方块
-					SpawnTower(mousePos);
-					
+					SpawnTower(mousePos);	
 					// 从备战席中删除卡牌并清空选中
 					player.Bench.RemoveAt(player.SelectedCardIndex);
 					player.SelectedCardIndex = -1;
 					GD.Print($"合成成功！部署了: {deployedCardName}");
-				}
-				else
-				{
-					GD.Print("体力不足，无法合成！");
-				}
 			}
 		}
 		// ================= 处理鼠标右键 =================

@@ -26,14 +26,10 @@ public partial class HUD : RichTextLabel
 			Phase.Settlement => "Settlement",
 			_ => "unknown"
 		};
-
-		float stamina = _gameLoop.State.Player1.CurrentStamina;
-		float maxStamina = _gameLoop.State.Player1.MaxStamina;
 		int coins = _gameLoop.State.Player1.Coins;
 		Text = $"Round: {_gameLoop.CurrentRound}\n" +
 			$"Phase: {phaseName}\n" +
 			$"Time: {(int)_gameLoop.PhaseTimer:F0}s\n" +
-			$"Stamina: {stamina:F0}/{maxStamina:F0}\n" +
 			$"Coins: {coins}";
 	}
 }

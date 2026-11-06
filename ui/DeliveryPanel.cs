@@ -52,7 +52,6 @@ namespace CoopDefense.UI
 				return;
 
 			var player = _gameLoop.State.Player1;
-			int cost = Config.NpcCallCost;
 			int left = player.DeliveriesLeftThisRound;
 			int max = player.MaxDeliveriesThisRound;
 
@@ -64,7 +63,7 @@ namespace CoopDefense.UI
 			}
 			else
 			{
-				Text = $"呼叫运输车\nCost: {cost} | 次数: {left}/{max}";
+				Text = $"呼叫运输车\n次数: {left}/{max}";
 				Disabled = false;
 			}
 		}

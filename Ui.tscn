@@ -31,52 +31,47 @@ script = ExtResource("1_hud")
 
 [node name="CardPanel" type="Control" parent="UIContainer" unique_id=12346694]
 anchors_preset = 0
-offset_left = 544.0
-offset_top = 72.0
-offset_right = 727.0
-offset_bottom = 212.0
+offset_left = 536.0
+offset_top = 832.0
+offset_right = 1352.0
+offset_bottom = 956.0
 script = ExtResource("3_37rv8")
 
 [node name="Card1Button" type="Button" parent="UIContainer/CardPanel" unique_id=736653116]
 layout_mode = 0
-offset_top = 763.0
-offset_right = 128.0
-offset_bottom = 891.0
+offset_left = 8.0
+offset_right = 136.0
+offset_bottom = 128.0
 
 [node name="Card2Button" type="Button" parent="UIContainer/CardPanel" unique_id=448175853]
 layout_mode = 0
-offset_left = 136.0
-offset_top = 763.0
-offset_right = 264.0
-offset_bottom = 891.0
+offset_left = 144.0
+offset_right = 272.0
+offset_bottom = 128.0
 
 [node name="Card3Button" type="Button" parent="UIContainer/CardPanel" unique_id=149087516]
 layout_mode = 0
-offset_left = 272.0
-offset_top = 763.0
-offset_right = 400.0
-offset_bottom = 891.0
+offset_left = 280.0
+offset_right = 408.0
+offset_bottom = 128.0
 
 [node name="Card4Button" type="Button" parent="UIContainer/CardPanel" unique_id=1946876983]
 layout_mode = 0
-offset_left = 408.0
-offset_top = 763.0
-offset_right = 536.0
-offset_bottom = 891.0
+offset_left = 416.0
+offset_right = 544.0
+offset_bottom = 128.0
 
 [node name="Card5Button" type="Button" parent="UIContainer/CardPanel" unique_id=1209072983]
 layout_mode = 0
-offset_left = 544.0
-offset_top = 763.0
-offset_right = 672.0
-offset_bottom = 891.0
+offset_left = 552.0
+offset_right = 680.0
+offset_bottom = 128.0
 
 [node name="Card6Button" type="Button" parent="UIContainer/CardPanel" unique_id=388600219]
 layout_mode = 0
-offset_left = 680.0
-offset_top = 764.0
-offset_right = 808.0
-offset_bottom = 892.0
+offset_left = 688.0
+offset_right = 816.0
+offset_bottom = 128.0
 
 [node name="BenchPanel" type="Control" parent="UIContainer" unique_id=127239247]
 anchors_preset = 0
@@ -162,8 +157,7 @@ offset_left = 1360.0
 offset_top = 836.0
 offset_right = 1616.0
 offset_bottom = 1092.0
-theme_override_font_sizes/font_size = 48
-text = ""
+theme_override_font_sizes/font_size = 28
 script = ExtResource("1_p07f7")
 
 [node name="ToggleContainer" type="Control" parent="." unique_id=562745834]

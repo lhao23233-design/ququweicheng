@@ -22,11 +22,14 @@ namespace CoopDefense.Combat
 		private List<Vector2I> _currentPath;
 		private int _pathIndex;
 		private Vector2I _lastGridPos = new Vector2I(-1, -1);
+		private Vector2I _lastPathTargetGrid = new Vector2I(-1, -1);
 		public EnemyTrait Trait { get; set; } = EnemyTrait.Normal;
 		private Delivery _lockedTarget = null; 
 		private Vector2I _lockedTargetGrid;
 		private int _pathStepsSinceLock = 0;
 		private int _stepsSinceLastReplan = 0;
+		private float _currentSpeedMultiplier = 1.0f;
+		private float _stuckTimer = 0f;
 
 		public override void _Ready()
 		{
@@ -85,13 +88,17 @@ namespace CoopDefense.Combat
 			};
 			AddChild(collision);
 		}
+		private float MoveSpeedMultiplier()
+		{
+			return _currentSpeedMultiplier;
+		}
 
 		private void MoveTowardDesitination(float delta)
 		{
-			// 如果当前路径为空，或者走完了，清空路径，下一帧重新算
-			if (_currentPath == null || _pathIndex >= _currentPath.Count)
+			// 路径尚未创建或已经走完时，准备按当前位置重新规划
+			if (_currentPath == null ||
+				(_currentPath.Count > 0 && _pathIndex >= _currentPath.Count))
 			{
-				// 清空路径，下一帧重新算
 				_currentPath = null;
 				_lastGridPos = new Vector2I(-1, -1);
 				_stepsSinceLastReplan = 0;
@@ -125,14 +132,20 @@ namespace CoopDefense.Combat
 					Config.NpcAcceleration,
 					currentSpeed,
 					delta);
-				MoveAndSlide();
+				MoveAndTrackStuck(delta);
 				return;
 			}
 
+			bool pathTargetChanged = destinationGrid != _lastPathTargetGrid;
 			if (_currentPath == null ||
-				(currentGrid != _lastGridPos && isCenteredOnCurrentCell && _stepsSinceLastReplan >= 2))
+				(currentGrid != _lastGridPos && isCenteredOnCurrentCell) ||
+				pathTargetChanged)
 			{
-				_lastGridPos = currentGrid;
+				if (isCenteredOnCurrentCell)
+				{
+					_lastGridPos = currentGrid;
+				}
+				_lastPathTargetGrid = destinationGrid;
 				_currentPath = Pathfinder.FindFastestPath(
 					currentGrid,
 					destinationGrid,
@@ -154,8 +167,8 @@ namespace CoopDefense.Combat
 			Vector2I targetGrid = _currentPath[_pathIndex];
 			Vector2 targetPos = _gridSystem.GridToWorld(targetGrid);
 
-			// TODO: 在这里按目标地块类型判断速度；当前怪物在所有可通行地块上都使用默认速度。
-			float targetSpeed = MoveSpeed;
+			//在这里按目标地块类型判断速度；当前怪物在所有可通行地块上都使用默认速度。
+			float targetSpeed = MoveSpeed * MoveSpeedMultiplier();
 			Velocity = SmoothMovement.GetVelocity(
 				GlobalPosition,
 				targetPos,
@@ -173,7 +186,32 @@ namespace CoopDefense.Combat
 				return;
 			}
 
+			MoveAndTrackStuck(delta);
+		}
+
+		private void MoveAndTrackStuck(float delta)
+		{
+			Vector2 posBeforeMove = GlobalPosition;
 			MoveAndSlide();
+			float actualMovedDistance = GlobalPosition.DistanceTo(posBeforeMove);
+
+			if (Velocity.Length() <= 1f || actualMovedDistance >= 1f)
+			{
+				_stuckTimer = 0f;
+				return;
+			}
+
+			_stuckTimer += delta;
+			if (_stuckTimer <= 1.0f)
+			{
+				return;
+			}
+
+			GD.Print("怪物卡死了！强制重置寻路！");
+			_stuckTimer = 0f;
+			_currentPath = null;
+			_pathIndex = 0;
+			_lastGridPos = new Vector2I(-1, -1);
 		}
 
 		private bool HandleLeak()
@@ -209,7 +247,7 @@ namespace CoopDefense.Combat
 			}
 
 			// 优先攻击挡路的防守单位，再攻击附近的运输单位。
-			bool attacked = TryAttackDefenseUnit() || TryAttackDelivery();
+			bool attacked = TryAttackDefenseUnit();
 
 			// 没有目标时短暂重试，避免每帧遍历场景分组。
 			_attackTimer = attacked ? _attackInterval : Config.EnemyIdleAttackRetryInterval;
@@ -229,22 +267,6 @@ namespace CoopDefense.Combat
 
 			return false;
 		}
-
-		private bool TryAttackDelivery()
-		{
-			// 把 "Delivery" 改成 "Deliveries"
-			foreach (Node node in GetTree().GetNodesInGroup("Deliveries"))
-			{
-				if (node is Delivery delivery && IsWithinAttackRange(delivery))
-				{
-					GD.Print("怪物正在攻击运钞车！"); // 加个打印方便排查
-					delivery.TakeDamage(_damage);
-					return true;
-				}
-			}
-			return false;
-		}
-
 		private bool IsWithinAttackRange(Node2D target)
 		{
 			return Position.DistanceTo(target.Position) < Config.EnemyAttackRange;
@@ -257,42 +279,39 @@ namespace CoopDefense.Combat
 		}
 		protected virtual Vector2I GetPathTarget()
 		{
-			// 如果我是拦截怪（CargoHunter）
 			if (Trait == EnemyTrait.CargoHunter)
 			{
-				if (_lockedTarget == null || !IsInstanceValid(_lockedTarget))
-        		{
+				if (_lockedTarget != null &&
+					(!IsInstanceValid(_lockedTarget) || _lockedTarget.IsQueuedForDeletion()))
+				{
+					_lockedTarget = null;
+					_currentSpeedMultiplier = 1.0f;
+				}
+
+				if (_lockedTarget == null)
+				{
 					var deliveries = GetTree().GetNodesInGroup("Deliveries");
-					if (deliveries.Count > 0 && deliveries[0] is Delivery car)
+					if (deliveries.Count > 0 &&
+						deliveries[0] is Delivery car &&
+						!car.IsQueuedForDeletion())
 					{
-						// 加上距离限制，防止它满地图追杀。假设 320 像素内才追。
 						if (GlobalPosition.DistanceTo(car.GlobalPosition) < 320f)
 						{
 							_lockedTarget = car;
-							// 返回车的当前网格坐标
-							_lockedTargetGrid = _gridSystem.WorldToGrid(car.GlobalPosition);
+							//追击加速至1.5f
+							_currentSpeedMultiplier = 1.5f;
 						}
 					}
 				}
-			if (_lockedTarget != null)
-			{
-				if (!IsInstanceValid(_lockedTarget))
+
+				if (_lockedTarget != null)
 				{
-					_lockedTarget = null; 
-				}
-				// 如果车跑得太远（比如超过 640 像素），放弃追击
-				else if (GlobalPosition.DistanceTo(_lockedTarget.GlobalPosition) > 640f)
-				{
-					_lockedTarget = null;
-				}
-				else
-				{
-					// 3. 一切正常，返回锁定的那个固定格子坐标（不再受车移动影响）
+					_lockedTargetGrid = _gridSystem.WorldToGrid(_lockedTarget.GlobalPosition);
 					return _lockedTargetGrid;
 				}
 			}
-			}
-			// 如果没有车，或者我是普通怪，就直奔水晶
+			//默认速度1f
+			_currentSpeedMultiplier = 1.0f;
 			return _gridSystem.CrystalPos;
 		}
 	}

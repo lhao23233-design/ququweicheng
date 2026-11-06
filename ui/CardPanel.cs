@@ -18,8 +18,6 @@ public partial class CardPanel : Control
 		}
 
 		_cardSystem = new CardSystem(_gameLoop.State.Player1);
-		_cardSystem.RefreshPage();
-
 		for (int i = 0; i < _cardButtons.Length; i++)
 		{
 			_cardButtons[i] = GetNode<Button>($"Card{i + 1}Button");

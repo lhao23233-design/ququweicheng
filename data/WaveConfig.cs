@@ -14,10 +14,16 @@ namespace CoopDefense.Data
                 } 
             },
             {
+                2, new List<SpawnGroup> 
+                { 
+                    new SpawnGroup(EnemyTrait.CargoHunter, 5, 1) // 5 只拦路怪，波动 ±1
+                } 
+            },
+            {
                 3, new List<SpawnGroup> 
                 {
                     new SpawnGroup(EnemyTrait.Normal, 3, 0), 
-                    new SpawnGroup(EnemyTrait.CargoHunter, 2, 1), // 2 只拦截怪，波动 ±1
+                    new SpawnGroup(EnemyTrait.CargoHunter, 2, 1), // 2 只拦路怪，波动 ±1
                     new SpawnGroup(EnemyTrait.Normal, 2, 0)  
                 }
             }

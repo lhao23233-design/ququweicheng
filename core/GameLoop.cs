@@ -15,7 +15,7 @@ namespace CoopDefense.Core
 		public Phase CurrentPhase { get; private set; } = Phase.Rest;
 		public float PhaseTimer { get; private set; }	
 		public GameState State { get; } = new();
-		public int CurrentRound { get;set; }
+		public int CurrentRound { get;set; }=1;
 
 		// 信号：状态切换时通知 UI
 		[Signal]
