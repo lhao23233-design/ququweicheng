@@ -31,10 +31,10 @@ script = ExtResource("1_hud")
 
 [node name="CardPanel" type="Control" parent="UIContainer" unique_id=12346694]
 anchors_preset = 0
-offset_left = 536.0
-offset_top = 832.0
+offset_left = -8.0
+offset_top = 840.0
 offset_right = 1352.0
-offset_bottom = 956.0
+offset_bottom = 964.0
 script = ExtResource("3_37rv8")
 
 [node name="Card1Button" type="Button" parent="UIContainer/CardPanel" unique_id=736653116]
@@ -72,6 +72,19 @@ layout_mode = 0
 offset_left = 688.0
 offset_right = 816.0
 offset_bottom = 128.0
+
+[node name="Card7Button" type="Button" parent="UIContainer/CardPanel" unique_id=1449917162]
+layout_mode = 0
+offset_left = 824.0
+offset_right = 952.0
+offset_bottom = 128.0
+
+[node name="RefreshButton" type="Button" parent="UIContainer/CardPanel" unique_id=2117548738]
+layout_mode = 0
+offset_left = 1096.0
+offset_top = -8.0
+offset_right = 1360.0
+offset_bottom = 120.0
 
 [node name="BenchPanel" type="Control" parent="UIContainer" unique_id=127239247]
 anchors_preset = 0

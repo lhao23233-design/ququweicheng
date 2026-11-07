@@ -20,6 +20,8 @@ namespace CoopDefense.Player
         private readonly PlayerState _player;
         private readonly List<Card> _currentPage = new List<Card>();
         public IReadOnlyList<Card> CurrentPage => _currentPage;
+        private int _DrawnCardCount= Config.StartingBenchSize;
+        private int refreshCost = Config.RefreshCost;
 
         public CardSystem(PlayerState player)
         {
@@ -29,8 +31,9 @@ namespace CoopDefense.Player
         public void RefreshPage()
         {
             _currentPage.Clear();
-
-            for (int i = 0; i < 3; i++)
+            //TODO：根据玩家tier决定；最低3张，最高config。max
+            _DrawnCardCount=Math.Clamp(_player.Tier, 3, Config.MaxBenchSize);
+            for (int i = 0; i <_DrawnCardCount ; i++)
             {
                 int targetTier = RollTargetTier();
                 List<Card> availableCards = null;
@@ -67,13 +70,13 @@ namespace CoopDefense.Player
         }
 
         public bool TryRefreshShop()
-        {
-            if (_player.Coins < Config.RefreshCost)
+        {   
+            if (_player.Coins < refreshCost)
             {
                 return false;
             }
 
-            _player.Coins -= Config.RefreshCost;
+            _player.Coins -= refreshCost;
             RefreshPage();
             return true;
         }
@@ -93,7 +96,6 @@ namespace CoopDefense.Player
                     return i + 1;
                 }
             }
-
             return probabilities.Length;
         }
 
@@ -118,6 +120,11 @@ namespace CoopDefense.Player
         public void OnCombatEnd()
         {
             _currentPage.Clear();
+        }
+        //修改刷新所需金币
+        public void RefreshCost()
+        {
+            return;
         }
     }
 }

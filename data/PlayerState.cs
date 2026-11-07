@@ -16,7 +16,6 @@ namespace CoopDefense.Data
         // 备战席（手牌）：用来存放买下来的材料卡
         public List<Card> Bench { get; private set; } = new List<Card>();
         public int Tier { get; set; } = 1;
-        public int drawnCardCount { get; set; } = 3;// 每次抽卡数量，默认 3 张
         public PlayerState(int id)
         {
             PlayerId = id;

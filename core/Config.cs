@@ -12,6 +12,8 @@ public static class Config {
 	public const int CardPageSizeMax = 6;
 	public const int RefreshCost = 5;
     static public int StartingCoins = 10;
+	public const int MaxBenchSize = 7;
+	static public int StartingBenchSize = 3;
 
 	// 升本
 	public const int AscendExpPerLevel = 10;
